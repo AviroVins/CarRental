@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
     protected $primaryKey = 'user_id';
 
@@ -21,9 +20,18 @@ class User extends Authenticatable
         'phone_number',
         'has_driver_license',
         'account_status',
+        'role'
     ];
 
     public $timestamps = true;
+
+    public function setPasswordHashAttribute($value) {
+        $this->attributes['password_hash'] = bcrypt($value);
+    }
+
+    public function getAuthPassword() {
+        return $this->password_hash;
+    }
 
     public function reservations() {
         return $this->hasMany(Reservation::class, 'user_id');

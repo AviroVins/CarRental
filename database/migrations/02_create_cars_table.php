@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('model');
             $table->integer('year');
             $table->string('status')->default('available');
+            $table->timestamps();
         });
     }
 

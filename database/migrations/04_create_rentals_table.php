@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->timestamp('return_time')->nullable();
             $table->integer('distance_km')->nullable();
             $table->decimal('cost', 10, 2)->nullable();
+            $table->timestamps();
         });
     }
 
