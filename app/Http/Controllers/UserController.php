@@ -4,20 +4,52 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Models\User;
 
 class UserController extends Controller
 {
-    public function index(): View
+    protected $primaryKey = 'user_id';
+    private $routePrefix = 'users';
+    private $title = 'Użytkownicy';
+
+    public function index()
     {
-        $users = DB::table('users')->get();
-        return view('users.index', compact('users'));
+        $items = User::all();
+        $columns = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
+
+        return view('shared.index', [
+            'items' => $items,
+            'columns' => $columns,
+            'routePrefix' => $this->routePrefix,
+            'title' => $this->title,
+        ]);
     }
 
-    public function create(): View
+    public function create()
     {
-        return view('users.create');
+        $columns = ['first_name', 'last_name', 'email', 'phone_number', 'role'];
+
+        return view('shared.form', [
+            'item' => null,
+            'columns' => $columns,
+            'routePrefix' => $this->routePrefix,
+            'title' => $this->title,
+            'mode' => 'create',
+        ]);
+    }
+
+    public function edit(User $user)
+    {
+        $columns = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
+
+        return view('shared.form', [
+            'item' => $user,
+            'columns' => $columns,
+            'routePrefix' => $this->routePrefix,
+            'title' => $this->title,
+            'mode' => 'edit',
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -34,13 +66,6 @@ class UserController extends Controller
         DB::table('users')->insert($validated);
 
         return redirect()->route('users.index')->with('success', 'Użytkownik dodany.');
-    }
-
-    public function edit($id): View
-    {
-        $user = DB::table('users')->where('user_id', $id)->first();
-        abort_unless($user, 404);
-        return view('users.edit', compact('user'));
     }
 
     public function update(Request $request, $id): RedirectResponse

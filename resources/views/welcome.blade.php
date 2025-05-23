@@ -36,8 +36,8 @@
         <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">Dostępne samochody</h2>
 
         @if(isset($cars) && $cars->count() > 0)
-            <div class="flex justify-center">
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 max-w-4xl w-full">
+            <div>
+                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 max-w-4xl w-full flex justify-center">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 ">
                         <thead class="bg-gray-50 dark:bg-gray-700">
                             <tr>

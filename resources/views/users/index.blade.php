@@ -16,13 +16,15 @@
                 <div class="mb-4 text-green-600">{{ session('success') }}</div>
             @endif
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-white dark:bg-gray-800 text-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <table class="table-auto w-full text-left border border-gray-300">
                     <thead>
                         <tr>
                             <th class="border px-4 py-2">ID</th>
                             <th class="border px-4 py-2">Imię</th>
+                            <th class="border px-4 py-2">Nazwisko</th>
                             <th class="border px-4 py-2">Email</th>
+                            <th class="border px-4 py-2">Telefon</th>
                             <th class="border px-4 py-2">Rola</th>
                             <th class="border px-4 py-2">Akcje</th>
                         </tr>
@@ -31,8 +33,10 @@
                         @foreach($users as $user)
                             <tr>
                                 <td class="border px-4 py-2">{{ $user->user_id }}</td>
-                                <td class="border px-4 py-2">{{ $user->name }}</td>
+                                <td class="border px-4 py-2">{{ $user->first_name }}</td>
+                                <td class="border px-4 py-2">{{ $user->last_name }}</td>
                                 <td class="border px-4 py-2">{{ $user->email }}</td>
+                                <td class="border px-4 py-2">{{ $user->phone_number }}</td>
                                 <td class="border px-4 py-2">{{ $user->role }}</td>
                                 <td class="border px-4 py-2">
                                     <a href="{{ route('users.edit', $user->user_id) }}"

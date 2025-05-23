@@ -3,27 +3,59 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Car;
 use Illuminate\Support\Facades\DB;
 
 class CarController extends Controller
 {
-    public function index() {
-        $cars = DB::table('cars')->get();
-        return view('cars.index', compact('cars'));
+    protected $primaryKey = 'plate_number';
+    public $incrementing = false;
+    protected $keyType = 'string';
+    public function index()
+
+    {
+
+        $items = Car::all();
+        $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
+
+        return view('shared.index', [
+            'items' => $items,
+            'columns' => $columns,
+            'routePrefix' => 'cars',
+            'title' => 'Lista samochodów',
+        ]);
     }
 
-    public function create() {
-        return view('cars.create');
+    public function create()
+    {
+        $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
+
+        return view('shared.form', [
+            'item' => new Car(),
+            'routePrefix' => 'cars',
+            'columns' => $columns,
+            'title' => 'Dodaj samochód',
+            'mode' => 'create',
+        ]);
+    }
+
+    public function edit(Car $car)
+    {
+
+        $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
+
+        return view('shared.form', [
+            'item' => $car,
+            'routePrefix' => 'cars',
+            'columns' => $columns,
+            'title' => 'Edytuj samochód',
+            'mode' => 'edit',
+        ]);
     }
 
     public function store(Request $request) {
         DB::table('cars')->insert($request->except('_token'));
         return redirect()->route('cars.index');
-    }
-
-    public function edit($plate_number) {
-        $car = DB::table('cars')->where('plate_number', $plate_number)->first();
-        return view('cars.edit', compact('car'));
     }
 
     public function update(Request $request, $plate_number) {

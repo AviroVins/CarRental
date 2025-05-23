@@ -3,29 +3,56 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
-    public function index() {
-        $payments = DB::table('payments')->get();
-        return view('payments.index', compact('payments'));
+    protected $primaryKey = 'payment_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    public function index()
+    {
+        $items = Payment::all();
+        $columns = ['payment_id', 'rental_id', 'user_id', 'amount', 'status', 'method'];
+        return view('shared.index', [
+            'items' => $items,
+            'columns' => $columns,
+            'routePrefix' => 'payments',
+            'title' => 'Lista płatności',
+        ]);
     }
 
-    public function create() {
-        $rentals = DB::table('rentals')->get();
-        return view('payments.create', compact('rentals'));
+    public function create()
+    {
+        $columns = ['payment_id', 'rental_id', 'user_id', 'amount', 'status', 'method'];
+
+        return view('shared.form', [
+            'item' => new Payment(),
+            'routePrefix' => 'payments',
+            'columns' => $columns,
+            'title' => 'Dodaj płatność',
+            'mode' => 'create',
+        ]);
+    }
+
+    public function edit(Payment $payment)
+    {
+        $columns = ['payment_id', 'rental_id', 'user_id', 'amount', 'status', 'method'];
+
+        return view('shared.form', [
+            'item' => $payment,
+            'routePrefix' => 'payments',
+            'columns' => $columns,
+            'title' => 'Edytuj płatność',
+            'mode' => 'edit',
+        ]);
     }
 
     public function store(Request $request) {
         DB::table('payments')->insert($request->except('_token'));
         return redirect()->route('payments.index');
-    }
-
-    public function edit($payment_id) {
-        $payment = DB::table('payments')->where('payment_id', $payment_id)->first();
-        $rentals = DB::table('rentals')->get();
-        return view('payments.edit', compact('payment', 'rentals'));
     }
 
     public function update(Request $request, $payment_id) {

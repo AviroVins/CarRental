@@ -11,16 +11,15 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
 
-                    <p class="mt-4">Witaj, {{ auth()->user()->first_name }}!</p>
-
-                    @if(auth()->user()->role === 'admin')
-                        <div class="mt-6">
-                            <a href="{{ route('admin.dashboard') }}" 
-                               class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    @if(auth()->check() && auth()->user()->role === 'admin')
+                        <div class="mt-4">
+                            <a href="{{ route('admin.dashboard') }}"
+                               class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                                 Panel Administratora
                             </a>
                         </div>
                     @endif
+
                 </div>
             </div>
         </div>
