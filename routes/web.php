@@ -2,11 +2,17 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
-use App\Http\Kernel;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\RentalController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Car;
 
 Route::get('/', function () {
-    return view('welcome');
+    $cars = Car::all();
+    return view('welcome', compact('cars'));
 });
 
 Route::get('/dashboard', function () {
@@ -19,18 +25,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::middleware(['auth', 'admin'])->get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-
-    Route::get('/admin/table/{name}', [AdminController::class, 'showTable'])->name('admin.table');
-
-    Route::get('/admin/table/{name}/create', [AdminController::class, 'create'])->name('admin.table.create');
-    Route::post('/admin/table/{name}', [AdminController::class, 'store'])->name('admin.table.store');
-
-    Route::get('/admin/table/{name}/{id}/edit', [AdminController::class, 'edit'])->name('admin.table.edit');
-    Route::put('/admin/table/{name}/{id}', [AdminController::class, 'update'])->name('admin.table.update');
-
-    Route::delete('/admin/table/{name}/{id}', [AdminController::class, 'destroy'])->name('admin.table.delete');
+    Route::resource('users', UserController::class);
+    Route::resource('cars', CarController::class);
+    Route::resource('reservations', ReservationController::class);
+    Route::resource('rentals', RentalController::class);
+    Route::resource('payments', PaymentController::class);
 });
 
 require __DIR__.'/auth.php';
