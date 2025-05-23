@@ -10,9 +10,11 @@ class CarFactory extends Factory
     {
         return [
             'plate_number' => strtoupper($this->faker->bothify('??#####')),
-            'brand' => $this->faker->randomElement(['Tesla', 'BMW', 'Nissan', 'Hyundai']),
+            'brand' => $this->faker->randomElement(['Tesla', 'Kia', 'Audi', 'Volvo']),
             'model' => $this->faker->word(),
             'year' => $this->faker->numberBetween(2018, 2024),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

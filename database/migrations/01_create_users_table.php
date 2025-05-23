@@ -15,7 +15,9 @@ return new class extends Migration
             $table->string('password_hash', 255);
             $table->string('phone_number', 20)->nullable();
             $table->boolean('has_driver_license')->default(true);
-            $table->string('account_status', 20)->default('active');
+            $table->string('account_status', 20)->default('active')->check("account_status IN ('active', 'blocked', 'inactive')");
+            $table->string('role', 20)->default('user')->check("role IN ('user', 'admin')");
+            $table->timestamps();
         });
     }
 

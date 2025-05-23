@@ -17,6 +17,8 @@ class UserFactory extends Factory
             'phone_number' => $this->faker->phoneNumber,
             'has_driver_license' => $this->faker->boolean(),
             'account_status' => $this->faker->randomElement(['active', 'inactive', 'blocked']),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }
