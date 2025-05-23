@@ -36,7 +36,7 @@ class AdminController extends Controller
         return view('admin.dashboard', ['tables' => $this->tables]);
     }
 
-    public function showTable(string $name): View
+    public function showTable(string $name = 'cars'): View
     {
         if (!in_array($name, $this->tables)) {
             abort(404, 'Tabela nie istnieje.');
