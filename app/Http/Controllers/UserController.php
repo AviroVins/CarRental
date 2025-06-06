@@ -9,14 +9,14 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'pesel';
     private $routePrefix = 'users';
     private $title = 'Użytkownicy';
 
     public function index()
     {
         $items = User::all();
-        $columns = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
+        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
 
         return view('shared.index', [
             'items' => $items,
@@ -28,7 +28,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $columns = ['first_name', 'last_name', 'email', 'phone_number', 'role'];
+        $columns = ['first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
 
         return view('shared.form', [
             'item' => null,
@@ -41,7 +41,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $columns = ['user_id', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
+        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
 
         return view('shared.form', [
             'item' => $user,
@@ -80,14 +80,44 @@ class UserController extends Controller
             $validated['password'] = bcrypt($request->input('password'));
         }
 
-        DB::table('users')->where('user_id', $id)->update($validated);
+        DB::table('users')->where('pesel', $id)->update($validated);
 
         return redirect()->route('users.index')->with('success', 'Użytkownik zaktualizowany.');
     }
 
     public function destroy($id): RedirectResponse
     {
-        DB::table('users')->where('user_id', $id)->delete();
+        DB::table('users')->where('pesel', $id)->delete();
         return redirect()->route('users.index')->with('success', 'Użytkownik usunięty.');
+    }
+
+    // NOWA metoda: dashboard z danymi do wykresów
+    public function dashboard()
+    {
+        // Najczęściej wynajmowane pojazdy (rentals)
+        $past = DB::table('rentals')
+            ->join('cars', 'rentals.plate_number', '=', 'cars.plate_number')
+            ->select('cars.model', DB::raw('COUNT(*) as count'))
+            ->groupBy('cars.model')
+            ->orderByDesc('count')
+            ->get();
+
+        // Planowane lub bieżące rezerwacje (reservations)
+        $future = DB::table('reservations')
+            ->where('start_time', '>=', now())
+            ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')
+            ->select('cars.model', DB::raw('COUNT(*) as count'))
+            ->groupBy('cars.model')
+            ->orderByDesc('count')
+            ->get();
+
+        $pastLabels = $past->pluck('model');
+        $pastData = $past->pluck('count');
+        $futureLabels = $future->pluck('model');
+        $futureData = $future->pluck('count');
+
+        return view('dashboard', compact(
+            'pastLabels', 'pastData', 'futureLabels', 'futureData'
+        ));
     }
 }

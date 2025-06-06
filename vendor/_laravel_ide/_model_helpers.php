@@ -324,14 +324,14 @@ namespace App\Models {
      * @property string $method
      * @property string $status
      * @property float $amount
-     * @property int $user_id
+     * @property string $pesel
      * @property int $rental_id
      * @property int $payment_id
      * @property-read \App\Models\Rental $rental
      * @property-read \App\Models\User $user
      * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment wherePaymentId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment whereRentalId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment wherePesel($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment whereAmount($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment whereStatus($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Payment>|Payment whereMethod($value)
@@ -640,7 +640,7 @@ namespace App\Models {
      * @property string|null $return_time
      * @property string|null $pickup_time
      * @property string $plate_number
-     * @property int $user_id
+     * @property string $pesel
      * @property int $reservation_id
      * @property int $rental_id
      * @property-read \App\Models\Reservation $reservation
@@ -649,7 +649,7 @@ namespace App\Models {
      * @property-read \App\Models\Payment $payment
      * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental whereRentalId($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental whereReservationId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental wherePesel($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental wherePlateNumber($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental wherePickupTime($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Rental>|Rental whereReturnTime($value)
@@ -961,13 +961,13 @@ namespace App\Models {
      * @property string|null $end_time
      * @property string|null $start_time
      * @property string $plate_number
-     * @property int $user_id
+     * @property string $pesel
      * @property int $reservation_id
      * @property-read \App\Models\User $user
      * @property-read \App\Models\Car $car
      * @property-read \App\Models\Rental $rental
      * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation whereReservationId($value)
-     * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation wherePesel($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation wherePlateNumber($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation whereStartTime($value)
      * @method static \Illuminate\Database\Eloquent\Builder<Reservation>|Reservation whereEndTime($value)
@@ -1274,15 +1274,16 @@ namespace App\Models {
      *
      * @property \Illuminate\Support\Carbon|null $updated_at
      * @property \Illuminate\Support\Carbon|null $created_at
+     * @property string|null $profile_photo
      * @property string $role
      * @property string $account_status
      * @property bool $has_driver_license
      * @property string|null $phone_number
+     * @property string $password
      * @property string $email
      * @property string $last_name
      * @property string $first_name
-     * @property int $user_id
-     * @property-read mixed $password_hash
+     * @property int $pesel
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Reservation> $reservations
      * @property-read int|null $reservations_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rental> $rentals
@@ -1291,14 +1292,16 @@ namespace App\Models {
      * @property-read int|null $payments_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
      * @property-read int|null $notifications_count
-     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereUserId($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User wherePesel($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereFirstName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereLastName($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereEmail($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User wherePassword($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User wherePhoneNumber($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereHasDriverLicense($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereAccountStatus($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereRole($value)
+     * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereProfilePhoto($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereCreatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User whereUpdatedAt($value)
      * @method static \Illuminate\Database\Eloquent\Builder<User>|User newModelQuery()

@@ -11,13 +11,13 @@ class ReservationsTableSeeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create();
-        $userIds = DB::table('users')->pluck('user_id')->toArray();
+        $pesels = DB::table('users')->pluck('pesel')->toArray();
         $plates = DB::table('cars')->pluck('plate_number')->toArray();
-
+        
         foreach (range(1, 5) as $i) {
             $start = $faker->dateTimeBetween('-3 days', '+3 days');
             DB::table('reservations')->insert([
-                'user_id' => $faker->randomElement($userIds),
+                'pesel' => $faker->randomElement($pesels),
                 'plate_number' => $faker->randomElement($plates),
                 'start_time' => $start,
                 'end_time' => (clone $start)->modify('+'.rand(1,4).' hours'),

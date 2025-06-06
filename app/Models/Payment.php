@@ -9,13 +9,13 @@ class Payment extends Model
     protected $primaryKey = 'payment_id';
     public $timestamps = false;
 
-    protected $fillable = ['rental_id', 'user_id', 'amount', 'status', 'method'];
+    protected $fillable = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
     public function rental() {
         return $this->belongsTo(Rental::class);
     }
 
     public function user() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'pesel', 'pesel');
     }
 }

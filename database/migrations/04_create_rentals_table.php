@@ -12,8 +12,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('reservation_id');
             $table->foreign('reservation_id')->references('reservation_id')->on('reservations')->onDelete('cascade');
 
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->string('pesel');
+            $table->foreign('pesel')->references('pesel')->on('users')->onDelete('cascade');
 
             $table->string('plate_number');
             $table->foreign('plate_number')->references('plate_number')->on('cars')->onDelete('cascade');

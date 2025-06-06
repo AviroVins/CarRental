@@ -12,12 +12,12 @@ class PaymentsTableSeeder extends Seeder
     {
         $faker = Faker::create();
         $rentalIds = DB::table('rentals')->pluck('rental_id')->toArray();
-        $userIds = DB::table('users')->pluck('user_id')->toArray();
+        $userIds = DB::table('users')->pluck('pesel')->toArray();
 
         foreach (range(1, 5) as $i) {
             DB::table('payments')->insert([
                 'rental_id' => $faker->randomElement($rentalIds),
-                'user_id' => $faker->randomElement($userIds),
+                'pesel' => $faker->randomElement($userIds),
                 'amount' => $faker->numberBetween(30, 200),
                 'status' => $faker->randomElement(['pending', 'paid']),
                 'method' => $faker->randomElement(['card', 'cash', 'blik']),
