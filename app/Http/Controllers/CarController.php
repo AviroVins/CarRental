@@ -11,6 +11,7 @@ class CarController extends Controller
     protected $primaryKey = 'plate_number';
     public $incrementing = false;
     protected $keyType = 'string';
+
     public function index()
 
     {
@@ -30,19 +31,27 @@ class CarController extends Controller
     {
         $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
 
+        $extraData = [
+            'statuses' => ['available', 'rented', 'maintenance', 'inactive'],
+        ];
+
         return view('shared.form', [
             'item' => new Car(),
             'routePrefix' => 'cars',
             'columns' => $columns,
             'title' => 'Dodaj samochód',
             'mode' => 'create',
+            'extraData' => $extraData,
         ]);
     }
 
     public function edit(Car $car)
     {
-
         $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
+
+        $extraData = [
+            'statuses' => ['available', 'rented', 'maintenance', 'inactive'],
+        ];
 
         return view('shared.form', [
             'item' => $car,
@@ -50,6 +59,7 @@ class CarController extends Controller
             'columns' => $columns,
             'title' => 'Edytuj samochód',
             'mode' => 'edit',
+            'extraData' => $extraData,
         ]);
     }
 

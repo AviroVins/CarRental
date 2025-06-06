@@ -10,7 +10,7 @@ class PaymentFactory extends Factory
     {
         return [
             'rental_id' => \App\Models\Rental::factory(),
-            'user_id' => \App\Models\User::factory(),
+            'pesel' => \App\Models\User::factory(),
             'amount' => $this->faker->randomFloat(2, 30, 200),
             'status' => $this->faker->randomElement(['pending', 'paid']),
             'method' => $this->faker->randomElement(['card', 'cash', 'blik']),

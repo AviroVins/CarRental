@@ -11,7 +11,7 @@ class RentalFactory extends Factory
         $pickup = $this->faker->dateTimeBetween('-7 days', '-1 days');
         return [
             'reservation_id' => \App\Models\Reservation::factory(),
-            'user_id' => \App\Models\User::factory(),
+            'pesel' => \App\Models\User::factory(),
             'plate_number' => \App\Models\Car::factory()->create()->plate_number,
             'pickup_time' => $pickup,
             'return_time' => (clone $pickup)->modify('+'.rand(1,3).' hours'),

@@ -32,17 +32,17 @@
                     <tbody>
                         @foreach($users as $user)
                             <tr>
-                                <td class="border px-4 py-2">{{ $user->user_id }}</td>
+                                <td class="border px-4 py-2">{{ $user->pesel }}</td>
                                 <td class="border px-4 py-2">{{ $user->first_name }}</td>
                                 <td class="border px-4 py-2">{{ $user->last_name }}</td>
                                 <td class="border px-4 py-2">{{ $user->email }}</td>
                                 <td class="border px-4 py-2">{{ $user->phone_number }}</td>
                                 <td class="border px-4 py-2">{{ $user->role }}</td>
                                 <td class="border px-4 py-2">
-                                    <a href="{{ route('users.edit', $user->user_id) }}"
+                                    <a href="{{ route('users.edit', $user->pesel) }}"
                                        class="text-blue-500 hover:underline mr-2">Edytuj</a>
 
-                                    <form action="{{ route('users.destroy', $user->user_id) }}" method="POST"
+                                    <form action="{{ route('users.destroy', $user->pesel) }}" method="POST"
                                           class="inline" onsubmit="return confirm('Czy na pewno chcesz usunąć?')">
                                         @csrf
                                         @method('DELETE')

@@ -12,15 +12,15 @@ return new class extends Migration {
             $table->unsignedBigInteger('rental_id');
             $table->foreign('rental_id')->references('rental_id')->on('rentals')->onDelete('cascade');
 
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
+            $table->string('pesel');
+            $table->foreign('pesel')->references('pesel')->on('users')->onDelete('cascade');
 
             $table->decimal('amount', 10, 2);
             $table->string('status')->default('pending');
             $table->string('method');
         });
     }
-
+    
     public function down(): void {
         Schema::dropIfExists('payments');
     }

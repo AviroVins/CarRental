@@ -12,14 +12,14 @@ class RentalsTableSeeder extends Seeder
     {
         $faker = Faker::create();
         $reservationIds = DB::table('reservations')->pluck('reservation_id')->toArray();
-        $userIds = DB::table('users')->pluck('user_id')->toArray();
+        $pesels = DB::table('users')->pluck('pesel')->toArray();
         $plates = DB::table('cars')->pluck('plate_number')->toArray();
 
         foreach (range(1, 5) as $i) {
             $pickup = $faker->dateTimeBetween('-7 days', '-1 days');
             DB::table('rentals')->insert([
                 'reservation_id' => $faker->randomElement($reservationIds),
-                'user_id' => $faker->randomElement($userIds),
+                'pesel' => $faker->randomElement($pesels),
                 'plate_number' => $faker->randomElement($plates),
                 'pickup_time' => $pickup,
                 'return_time' => (clone $pickup)->modify('+'.rand(1,3).' hours'),
