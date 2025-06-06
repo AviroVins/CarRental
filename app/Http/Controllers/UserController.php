@@ -10,6 +10,7 @@ use App\Models\User;
 class UserController extends Controller
 {
     protected $primaryKey = 'pesel';
+    protected $keyType = 'string';
     private $routePrefix = 'users';
     private $title = 'Użytkownicy';
 
@@ -28,10 +29,10 @@ class UserController extends Controller
 
     public function create()
     {
-        $columns = ['first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
+        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo', 'password'];
 
         return view('shared.form', [
-            'item' => null,
+            'item' => new User(),
             'columns' => $columns,
             'routePrefix' => $this->routePrefix,
             'title' => $this->title,
@@ -55,10 +56,14 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
+            'pesel' => 'required|string|unique:users,pesel',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'nullable|string|max:20',
+            'role' => 'required|string|in:admin,user',
+            'profile_photo' => 'nullable|string|max:255',
             'password' => 'required|string|min:6',
-            'role' => 'required|string',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -68,33 +73,34 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'Użytkownik dodany.');
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $pesel): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,$id,user_id",
-            'role' => 'required|string',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => "required|email|unique:users,email,$pesel,pesel",
+            'phone_number' => 'nullable|string|max:20',
+            'role' => 'required|string|in:admin,user',
+            'profile_photo' => 'nullable|string|max:255',
         ]);
 
         if ($request->filled('password')) {
             $validated['password'] = bcrypt($request->input('password'));
         }
 
-        DB::table('users')->where('pesel', $id)->update($validated);
+        DB::table('users')->where('pesel', $pesel)->update($validated);
 
         return redirect()->route('users.index')->with('success', 'Użytkownik zaktualizowany.');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($pesel): RedirectResponse
     {
-        DB::table('users')->where('pesel', $id)->delete();
+        DB::table('users')->where('pesel', $pesel)->delete();
         return redirect()->route('users.index')->with('success', 'Użytkownik usunięty.');
     }
 
-    // NOWA metoda: dashboard z danymi do wykresów
     public function dashboard()
     {
-        // Najczęściej wynajmowane pojazdy (rentals)
         $past = DB::table('rentals')
             ->join('cars', 'rentals.plate_number', '=', 'cars.plate_number')
             ->select('cars.model', DB::raw('COUNT(*) as count'))
@@ -102,7 +108,6 @@ class UserController extends Controller
             ->orderByDesc('count')
             ->get();
 
-        // Planowane lub bieżące rezerwacje (reservations)
         $future = DB::table('reservations')
             ->where('start_time', '>=', now())
             ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')

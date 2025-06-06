@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('profile_photo')->nullable()->default('def.jpg');
             $table->timestamps();
         });
-        
+
         DB::statement("ALTER TABLE users ADD CONSTRAINT chk_account_status CHECK (account_status IN ('active', 'blocked', 'inactive'))");
         DB::statement("ALTER TABLE users ADD CONSTRAINT chk_role CHECK (role IN ('user', 'admin'))");
     }

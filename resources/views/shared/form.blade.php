@@ -1,4 +1,4 @@
-Wprowadź zmiany do podanego form: <x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
             {{ $mode === 'create' ? 'Dodaj' : 'Edytuj' }} {{ $title }}
@@ -25,7 +25,10 @@ Wprowadź zmiany do podanego form: <x-app-layout>
                 @endif
 
                 @foreach($columns as $col)
-                    @if($mode === 'create' && $col === 'rental_id')
+
+                    @if(($mode === 'create' && $col === 'payment_id' && $routePrefix === 'payments') ||
+                        ($mode === 'create' && $col === 'reservation_id' && $routePrefix === 'reservations') ||
+                        ($mode === 'create' && $col === 'rental_id' && $routePrefix === 'rentals'))
                         @continue
                     @endif
 
@@ -49,7 +52,18 @@ Wprowadź zmiany do podanego form: <x-app-layout>
                                 @endforeach
                             </select>
 
-                        @elseif($col === 'pesel')
+                        @elseif($col === 'rental_id' && $routePrefix === 'payments')
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
+                                <option value="">-- Wybierz wypożyczenie --</option>
+                                @foreach($extraData['rentals'] ?? [] as $key => $label)
+                                    <option value="{{ $key }}" {{ old($col, $item->$col ?? '') == $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                        @elseif($col === 'pesel' && $routePrefix !== 'users')
                             <select id="{{ $col }}" name="{{ $col }}" required
                                 class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
                                 <option value="">-- Wybierz użytkownika --</option>
@@ -60,7 +74,13 @@ Wprowadź zmiany do podanego form: <x-app-layout>
                                 @endforeach
                             </select>
 
-                        @elseif($col === 'plate_number')
+                        @elseif($col === 'pesel' && $routePrefix === 'users')
+                            <input type="text" id="{{ $col }}" name="{{ $col }}"
+                                value="{{ old($col, $item->$col ?? '') }}"
+                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror"
+                                required>
+
+                        @elseif($col === 'plate_number' && $routePrefix !== 'cars')
                             <select id="{{ $col }}" name="{{ $col }}" required
                                 class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
                                 <option value="">-- Wybierz samochód --</option>
@@ -71,19 +91,43 @@ Wprowadź zmiany do podanego form: <x-app-layout>
                                 @endforeach
                             </select>
 
-                        @elseif(in_array($col, ['pickup_time', 'return_time']))
+                        @elseif($col === 'plate_number' && $routePrefix === 'cars')
+                            <input type="text" id="{{ $col }}" name="{{ $col }}"
+                                value="{{ old($col, $item->$col ?? '') }}"
+                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror"
+                                required>
+
+
+                        @elseif($col === 'status')
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
+                                <option value="">-- Wybierz status --</option>
+                                @foreach($extraData['statuses'] ?? [] as $status)
+                                    <option value="{{ $status }}" {{ old($col, $item->$col ?? '') == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                        @elseif($col === 'method')
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
+                                <option value="">-- Wybierz metodę płatności --</option>
+                                @foreach($extraData['methods'] ?? [] as $method)
+                                    <option value="{{ $method }}" {{ old($col, $item->$col ?? '') == $method ? 'selected' : '' }}>
+                                        {{ ucfirst($method) }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                        @elseif(in_array($col, ['pickup_time', 'return_time', 'start_time', 'end_time']))
                             <input type="datetime-local" id="{{ $col }}" name="{{ $col }}"
                                 value="{{ old($col, isset($item->$col) && $item->$col ? \Carbon\Carbon::parse($item->$col)->format('Y-m-d\TH:i') : '') }}"
                                 class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror"
-                                {{ $col === 'pickup_time' ? 'required' : '' }}>
+                                required>
 
-                        @elseif($col === 'distance_km')
-                            <input type="number" id="{{ $col }}" name="{{ $col }}" min="0" step="1"
-                                value="{{ old($col, $item->$col ?? '') }}"
-                                class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
-
-                        @elseif($col === 'cost')
-                            <input type="number" id="{{ $col }}" name="{{ $col }}" min="0" step="0.01"
+                        @elseif(in_array($col, ['distance_km', 'cost', 'amount']))
+                            <input type="number" id="{{ $col }}" name="{{ $col }}" min="0" step="{{ $col === 'cost' || $col === 'amount' ? '0.01' : '1' }}"
                                 value="{{ old($col, $item->$col ?? '') }}"
                                 class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror">
 
@@ -91,7 +135,7 @@ Wprowadź zmiany do podanego form: <x-app-layout>
                             <input type="text" id="{{ $col }}" name="{{ $col }}"
                                 value="{{ old($col, $item->$col ?? '') }}"
                                 class="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:text-white @error($col) border-red-600 @enderror"
-                                {{ ($mode === 'create' && $col === 'rental_id') ? 'readonly' : '' }}>
+                                {{ ($mode === 'create' && in_array($col, ['payment_id', 'reservation_id', 'rental_id'])) ? 'readonly' : '' }}>
                         @endif
 
                         @error($col)

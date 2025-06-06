@@ -11,6 +11,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'pesel';
+    protected $keyType = 'string';
 
     protected $fillable = [
         'pesel',
