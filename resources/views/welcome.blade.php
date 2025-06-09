@@ -10,19 +10,19 @@
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit"
-                                class="text-sm text-gray-700 dark:text-gray-300 underline hover:text-gray-900 dark:hover:text-white">
+                            class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm">
                             Wyloguj się
                         </button>
                     </form>
                 @else
                     <a href="{{ route('login') }}"
-                       class="text-sm text-gray-700 dark:text-gray-300 underline hover:text-gray-900 dark:hover:text-white">
+                       class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">
                         Logowanie
                     </a>
 
                     @if (Route::has('register'))
                         <a href="{{ route('register') }}"
-                           class="text-sm text-gray-700 dark:text-gray-300 underline hover:text-gray-900 dark:hover:text-white ml-4">
+                           class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition text-sm ml-2">
                             Rejestracja
                         </a>
                     @endif
@@ -31,37 +31,40 @@
         </div>
     </x-slot>
 
-    <main class="py-10 max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <br>
-        <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100 text-center">Dostępne samochody</h2>
+    <div class="py-10 max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+
+        <h2 class="text-xl font-semibold text-center text-gray-900 dark:text-gray-100 mb-6">
+            Dostępne samochody
+        </h2>
 
         @if(isset($cars) && $cars->count() > 0)
-            <div>
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg p-6 max-w-4xl w-full flex justify-center">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 ">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
+            <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6">
+                <table class="w-full table-auto border border-gray-300 dark:border-gray-700 text-left">
+                    <thead class="bg-gray-100 dark:bg-gray-700">
+                        <tr>
+                            <th class="border px-4 py-2 text-gray-600 dark:text-gray-300">Marka</th>
+                            <th class="border px-4 py-2 text-gray-600 dark:text-gray-300">Model</th>
+                            <th class="border px-4 py-2 text-gray-600 dark:text-gray-300">Rok</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach($cars as $car)
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Marka</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Model</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Rok</th>
+                                <td class="border px-4 py-2 text-gray-900 dark:text-gray-100">{{ $car->maker }}</td>
+                                <td class="border px-4 py-2 text-gray-900 dark:text-gray-100">{{ $car->model }}</td>
+                                <td class="border px-4 py-2 text-gray-900 dark:text-gray-100">{{ $car->year }}</td>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($cars as $car)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $car->maker }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $car->model }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $car->year }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         @else
-            <p class="text-gray-700 dark:text-gray-300">Brak dostępnych samochodów.</p>
+            <p class="text-center text-gray-700 dark:text-gray-300">
+                Brak dostępnych samochodów.
+            </p>
         @endif
-    </main>
+
+    </div>
 
     <footer class="text-center text-sm text-gray-500 mt-10 dark:text-gray-400">
         &copy; {{ date('Y') }} Wypożyczalnia aut. Wszelkie prawa zastrzeżone.

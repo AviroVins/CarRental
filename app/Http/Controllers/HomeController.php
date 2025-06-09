@@ -8,7 +8,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $cars = Car::all(); // lub np. Car::where('available', true)->get();
+        $cars = Car::all();
         return view('welcome', compact('cars'));
     }
 }

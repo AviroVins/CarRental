@@ -1283,7 +1283,7 @@ namespace App\Models {
      * @property string $email
      * @property string $last_name
      * @property string $first_name
-     * @property int $pesel
+     * @property string $pesel
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Reservation> $reservations
      * @property-read int|null $reservations_count
      * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Rental> $rentals

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use App\Rules\ValidPesel;
 
 class UserController extends Controller
 {
@@ -29,7 +30,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo', 'password'];
+        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'password'];
 
         return view('shared.form', [
             'item' => new User(),
@@ -42,7 +43,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
+        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
 
         return view('shared.form', [
             'item' => $user,
@@ -56,13 +57,12 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'pesel' => 'required|string|unique:users,pesel',
+            'pesel' => ['required', 'string', 'unique:users,pesel', new ValidPesel],
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'nullable|string|max:20',
             'role' => 'required|string|in:admin,user',
-            'profile_photo' => 'nullable|string|max:255',
             'password' => 'required|string|min:6',
         ]);
 
@@ -76,12 +76,13 @@ class UserController extends Controller
     public function update(Request $request, $pesel): RedirectResponse
     {
         $validated = $request->validate([
+            'pesel' => ['required', 'string', 'unique:users,pesel', new ValidPesel],
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,$pesel,pesel",
+            'email' => 'required|email|unique:users,email',
             'phone_number' => 'nullable|string|max:20',
             'role' => 'required|string|in:admin,user',
-            'profile_photo' => 'nullable|string|max:255',
+            'password' => 'required|string|min:6',
         ]);
 
         if ($request->filled('password')) {
