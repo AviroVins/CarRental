@@ -24,7 +24,7 @@ class ReservationController extends Controller
 
     public function create()
     {
-        $columns = ['reservation_id', 'pesel', 'plate_number', 'start_time', 'end_time', 'status'];
+        $columns = ['pesel', 'plate_number', 'start_time', 'end_time', 'status'];
 
         $extraData = [
             'users' => DB::table('users')
@@ -49,7 +49,7 @@ class ReservationController extends Controller
 
     public function edit(Reservation $reservation)
     {
-        $columns = ['reservation_id', 'pesel', 'plate_number', 'start_time', 'end_time', 'status'];
+        $columns = ['pesel', 'plate_number', 'start_time', 'end_time', 'status'];
 
         $extraData = [
             'users' => DB::table('users')

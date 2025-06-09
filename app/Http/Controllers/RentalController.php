@@ -32,7 +32,10 @@ class RentalController extends Controller
         $columns = ['reservation_id', 'pesel', 'plate_number', 'pickup_time', 'return_time', 'distance_km', 'cost'];
 
         $extraData = [
-            'reservations' => Reservation::pluck('reservation_id', 'reservation_id')->toArray(),
+            'reservations' => DB::table('reservations')
+                ->select('reservation_id', DB::raw("CONCAT('[', reservation_id, '] ', plate_number, ' (', pesel, ')') AS label"))
+                ->pluck('label', 'reservation_id')
+                ->toArray(),
             'users' => DB::table('users')
                 ->select('pesel', DB::raw("CONCAT(first_name, ' ', last_name, ' (', pesel, ')') AS label"))
                 ->pluck('label', 'pesel')
@@ -55,7 +58,10 @@ class RentalController extends Controller
         $columns = ['rental_id', 'reservation_id', 'pesel', 'plate_number', 'pickup_time', 'return_time', 'distance_km', 'cost'];
 
         $extraData = [
-            'reservations' => Reservation::pluck('reservation_id', 'reservation_id')->toArray(),
+            'reservations' => DB::table('reservations')
+                ->select('reservation_id', DB::raw("CONCAT('[', reservation_id, '] ', plate_number, ' (', pesel, ')') AS label"))
+                ->pluck('label', 'reservation_id')
+                ->toArray(),
             'users' => DB::table('users')
                 ->select('pesel', DB::raw("CONCAT(first_name, ' ', last_name, ' (', pesel, ')') AS label"))
                 ->pluck('label', 'pesel')

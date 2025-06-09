@@ -36,7 +36,7 @@
         <!-- Wykres rentals -->
         <div class="flex-1 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 flex flex-col items-center justify-center">
             <h3 class="text-center font-semibold text-gray-700 dark:text-gray-200 mb-4">
-                Najczęściej wynajmowane pojazdy (rentals)
+                Najczęściej wynajmowane pojazdy
             </h3>
             <canvas id="pastChart" style="max-width: 300px; max-height: 300px; width: 100%; color: #00000;"></canvas>
         </div>
@@ -44,7 +44,7 @@
         <!-- Wykres reservations -->
         <div class="flex-1 bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg p-6 flex flex-col items-center justify-center">
             <h3 class="text-center font-semibold text-gray-700 dark:text-gray-200 mb-4">
-                Planowane / bieżące rezerwacje (reservations)
+                Planowane / bieżące rezerwacje
             </h3>
             <canvas id="futureChart" style="max-width: 300px; max-height: 300px; width: 100%; color: #00000;"></canvas>
         </div>

@@ -26,7 +26,7 @@ class PaymentController extends Controller
 
     public function create()
     {
-        $columns = ['payment_id', 'rental_id', 'pesel', 'amount', 'status', 'method'];
+        $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
             'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
@@ -50,7 +50,7 @@ class PaymentController extends Controller
 
     public function edit(Payment $payment)
     {
-        $columns = ['payment_id', 'rental_id', 'pesel', 'amount', 'status', 'method'];
+        $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
             'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
