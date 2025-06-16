@@ -14,7 +14,7 @@ class PaymentsTableSeeder extends Seeder
         $rentalIds = DB::table('rentals')->pluck('rental_id')->toArray();
         $userIds = DB::table('users')->pluck('pesel')->toArray();
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 300) as $i) {
             DB::table('payments')->insert([
                 'rental_id' => $faker->randomElement($rentalIds),
                 'pesel' => $faker->randomElement($userIds),
