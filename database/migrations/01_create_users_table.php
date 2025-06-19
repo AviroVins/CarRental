@@ -19,11 +19,11 @@ return new class extends Migration
             $table->boolean('has_driver_license')->default(true);
             $table->string('account_status', 20)->default('active');
             $table->string('role', 20)->default('user');
-            $table->string('profile_photo')->nullable()->default('def.jpg');
+            $table->string('profile_photo')->default('def.jpg');
             $table->timestamps();
         });
 
-        DB::statement("ALTER TABLE users ADD CONSTRAINT chk_account_status CHECK (account_status IN ('active', 'blocked', 'inactive'))");
+        DB::statement("ALTER TABLE users ADD CONSTRAINT chk_account_status CHECK (account_status IN ('active', 'inactive'))");
         DB::statement("ALTER TABLE users ADD CONSTRAINT chk_role CHECK (role IN ('user', 'admin'))");
     }
 

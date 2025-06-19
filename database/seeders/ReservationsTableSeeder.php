@@ -14,7 +14,7 @@ class ReservationsTableSeeder extends Seeder
         $pesels = DB::table('users')->pluck('pesel')->toArray();
         $plates = DB::table('cars')->pluck('plate_number')->toArray();
         
-        foreach (range(1, 80) as $i) {
+        foreach (range(1, 100) as $i) {
             $start = $faker->dateTimeBetween('-3 days', '+3 days');
             DB::table('reservations')->insert([
                 'pesel' => $faker->randomElement($pesels),

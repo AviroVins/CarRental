@@ -44,6 +44,30 @@ class CarsTableSeeder extends Seeder
                 'model' => 'ID.4',
                 'year' => 2023,
             ],
+            [
+                'plate_number' => 'WW00006',
+                'maker' => 'Volvo',
+                'model' => 'EX30',
+                'year' => 2024,
+            ],
+            [
+                'plate_number' => 'WW00007',
+                'maker' => 'Mercedes',
+                'model' => 'EQA',
+                'year' => 2022,
+            ],
+            [
+                'plate_number' => 'WW00008',
+                'maker' => 'Nissan',
+                'model' => 'Leaf',
+                'year' => 2023,
+            ],
+            [
+                'plate_number' => 'WW00009',
+                'maker' => 'Kia',
+                'model' => 'EV6',
+                'year' => 2021,
+            ],
         ]);
     }
 }

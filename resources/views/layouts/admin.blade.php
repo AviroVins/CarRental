@@ -1,43 +1,39 @@
 <!DOCTYPE html>
 <html lang="pl">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+        <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+        <!-- Główne style -->
+        <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
 
-    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
-</head>
+    </head>
 
-<body id="page-top">
+    <body id="page-top">
 
-    <div id="wrapper">
+        <div id="wrapper">
+            @include('layouts.sidebar')
 
-        @include('layouts.sidebar')
+            <div id="content-wrapper" class="d-flex flex-column">
 
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    @include('layouts.topbar')
 
-            <!-- Main Content -->
-            <div id="content">
+                    <div class="container-fluid py-4">
+                        @yield('content')
+                    </div>
 
-                @include('layouts.topbar')
-
-                <div class="container-fluid py-4">
-                    @yield('content')
                 </div>
-
             </div>
-        </div>>
-    </div>
+        </div>
 
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+        <!-- Skrypty -->
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-</body>
-
+        @stack('scripts')
+    </body>
 </html>

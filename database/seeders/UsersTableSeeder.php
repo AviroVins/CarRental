@@ -41,7 +41,7 @@ class UsersTableSeeder extends Seeder
 
         $faker->addProvider(new PeselProvider($faker));
         
-        foreach (range(1, 40) as $i) {
+        foreach (range(1, 98) as $i) {
             User::create([
                 'pesel' => $faker->unique()->pesel(),
                 'first_name' => $faker->firstName,
@@ -50,7 +50,7 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'phone_number' => $faker->phoneNumber,
                 'has_driver_license' => $faker->boolean,
-                'account_status' => $faker->randomElement(['active', 'inactive', 'blocked']),
+                'account_status' => $faker->randomElement(['active', 'inactive']),
                 'role' => 'user',
             ]);
         }

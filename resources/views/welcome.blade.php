@@ -1,11 +1,10 @@
 @extends('layouts.admin')
 
-<x-app-layout>
-    <x-slot name="header">
-        <h1 class="text-center text-primary fw-bold">
-            <i class="fas fa-car-side me-2"></i>Wypożyczalnia aut - Strona główna
-        </h1>
-    </x-slot>
+@section('content')
+
+    <h1 class="text-center text-primary fw-bold mb-4">
+        <i class="fas fa-car-side me-2"></i>Wypożyczalnia aut - Strona główna
+    </h1>
 
     <h2 class="text-center h4 text-secondary mb-4">
         <i class="fas fa-list-ul me-2"></i>Dostępne samochody
@@ -44,4 +43,4 @@
         </p>
     @endif
 
-</x-app-layout>
+@endsection

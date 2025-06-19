@@ -91,18 +91,24 @@
                 <select class="form-control" id="account_status" name="account_status">
                     <option value="active" {{ old('account_status', $user->account_status) === 'active' ? 'selected' : '' }}>Aktywny</option>
                     <option value="inactive" {{ old('account_status', $user->account_status) === 'inactive' ? 'selected' : '' }}>Nieaktywny</option>
-                    <option value="blocked" {{ old('account_status', $user->account_status) === 'blocked' ? 'selected' : '' }}>Zablokowany</option>
                 </select>
                 @error('account_status') <div class="text-danger mt-1">{{ $message }}</div> @enderror
             </div>
+        </div>
+    </div>
 
-            <div class="form-group col-md-4">
-                <label for="role">Rola</label>
-                <select class="form-control" id="role" name="role">
-                    <option value="user" {{ old('role', $user->role) === 'user' ? 'selected' : '' }}>Użytkownik</option>
-                    <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Administrator</option>
-                </select>
-                @error('role') <div class="text-danger mt-1">{{ $message }}</div> @enderror
+    <!-- Zmiana hasła -->
+    <div class="card mb-4">
+        <div class="card-header font-weight-bold">Zmiana hasła</div>
+            <div class="card-body row">
+                <div class="form-group col-md-6">
+                    <label for="password">Nowe hasło</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                    @error('password') <div class="text-danger mt-1">{{ $message }}</div> @enderror
+                </div>
+            <div class="form-group col-md-6">
+                <label for="password_confirmation">Powtórz nowe hasło</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
             </div>
         </div>
     </div>

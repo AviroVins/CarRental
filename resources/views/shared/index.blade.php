@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-<!-- Page Heading -->
+
 <h1 class="h3 mb-4 text-gray-800">{{ $title }}</h1>
 
 <a href="{{ route($routePrefix . '.create') }}" class="btn btn-success mb-4">Dodaj nowy</a>
@@ -42,6 +42,11 @@
                     @endforeach
                 </tbody>
             </table>
+
+            {{-- Paginacja --}}
+            <div class="mt-3">
+                {{ $items->links() }}
+            </div>
         </div>
     </div>
 </div>
