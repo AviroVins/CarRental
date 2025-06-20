@@ -39,7 +39,7 @@
                         @enderror
                     </div>
 
-                    <!-- Remember Me -->
+                    {{-- <!-- Remember Me -->
                     <div class="form-group form-check">
                         <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
                         <label class="form-check-label" for="remember_me">Zapamiętaj mnie</label>
@@ -50,7 +50,7 @@
                         @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}" class="btn btn-link">Nie pamiętasz hasła?</a>
                         @endif
-                    </div>
+                    </div> --}}
 
                     <!-- Submit -->
                     <button type="submit" class="btn btn-primary btn-block">

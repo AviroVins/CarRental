@@ -12,15 +12,42 @@ class PaymentController extends Controller
     public $incrementing = true;
     protected $keyType = 'int';
 
-    public function index()
+    public function index(Request $request)
     {
-        $items = Payment::paginate(10);
+        $query = Payment::query();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($request->filled('method')) {
+            $query->where('method', $request->input('method'));
+        }
+
+        if ($request->filled('pesel')) {
+            $query->where('pesel', $request->input('pesel'));
+        }
+
+        $items = $query->paginate(10)->appends($request->query());
+
         $columns = ['payment_id', 'rental_id', 'pesel', 'amount', 'status', 'method'];
+
+        $extraData = [
+            'statuses' => ['pending', 'paid'],
+            'methods' => ['card', 'blik'],
+            'users' => DB::table('users')
+                ->select('pesel', DB::raw("CONCAT(first_name, ' ', last_name, ' (', pesel, ')') AS label"))
+                ->pluck('label', 'pesel')
+                ->toArray(),
+        ];
+
         return view('shared.index', [
             'items' => $items,
             'columns' => $columns,
             'routePrefix' => 'payments',
             'title' => 'Lista płatności',
+            'filters' => $request->only(['status', 'method', 'pesel']),
+            'extraData' => $extraData,
         ]);
     }
 

@@ -8,7 +8,7 @@
         <div class="row mb-4">
             <div class="col-md-12">
                 <div class="card shadow h-100">
-                    <div class="card-header">Zarobki z wynajmu (ostatnie 12 miesięcy)</div>
+                    <div class="card-header">Zarobki z wynajmu (ostatnie 30 dni)</div>
                     <div class="card-body" style="height: 300px;">
                         <canvas id="earningsChart" style="max-height: 100%;"></canvas>
                     </div>
@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="card shadow h-100">
-                    <div class="card-header">Popularność wynajmu (ilość wypożyczeń)</div>
+                    <div class="card-header">Popularność wynajmu (ilość wypożyczeń – ostatnie 30 dni)</div>
                     <div class="card-body" style="height: 300px;">
                         <canvas id="popularityChart" style="max-height: 100%;"></canvas>
                     </div>
@@ -43,18 +43,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const months = @json($months);
+        const days = @json($days);
         const earnings = @json($earnings);
         const paidCount = @json($paidCount);
         const pendingCount = @json($pendingCount);
-        const popMonths = @json($popMonths);
         const popularity = @json($popularity);
 
         // Zarobki
         new Chart(document.getElementById('earningsChart'), {
             type: 'line',
             data: {
-                labels: months,
+                labels: days,
                 datasets: [{
                     label: 'Zarobki (PLN)',
                     data: earnings,
@@ -95,7 +94,7 @@
         new Chart(document.getElementById('popularityChart'), {
             type: 'bar',
             data: {
-                labels: popMonths,
+                labels: days,
                 datasets: [{
                     label: 'Wypożyczenia',
                     data: popularity,

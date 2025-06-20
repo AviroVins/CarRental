@@ -14,6 +14,34 @@
     <a href="{{ route($routePrefix . '.create') }}" class="btn btn-success mb-4">Dodaj nowy</a>
 @endif
 
+{{-- Formularz filtrowania --}}
+@if ($routePrefix === 'payments')
+    <form method="GET" action="{{ route('payments.index') }}" class="mb-4 row g-2">
+        <div class="col-md-4">
+            <label for="status" class="form-label">Status płatności</label>
+            <select name="status" id="status" class="form-control">
+                <option value="">-- Wszystkie --</option>
+                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Oczekuje na zapłatę</option>
+                <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Opłacone</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="method" class="form-label">Metoda płatności</label>
+            <select name="method" id="method" class="form-control">
+                <option value="">-- Wszystkie --</option>
+                <option value="card" {{ request('method') === 'card' ? 'selected' : '' }}>Karta</option>
+                <option value="blik" {{ request('method') === 'blik' ? 'selected' : '' }}>Blik</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">Filtruj</button>
+            <a href="{{ route('payments.index') }}" class="btn btn-secondary">Wyczyść</a>
+        </div>
+    </form>
+@endif
+
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
@@ -41,7 +69,7 @@
                                     Start
                                 @elseif($col === 'end_time' && $routePrefix === 'user.reservations')
                                     Zakończenie
-                                
+
                                 {{-- Kolumny dla pozostałych przypadków --}}
                                 @else
                                     {{ ucfirst(str_replace('_', ' ', $col)) }}
@@ -61,7 +89,7 @@
                                     {{-- Użytkownik-Płatności  oraz Płatności --}}
                                     @if ($col === 'rental_id' && $routePrefix === 'user.payments')
                                         <strong>{{ $item->rental && $item->rental->car ? $item->rental->car->make . ' ' . $item->rental->car->model . ' - [' . $item->rental->car->plate_number . ']' : 'Brak danych' }}</strong>
-                                    
+
                                     @elseif ($col === 'status' && ($routePrefix === 'user.payments' || $routePrefix === 'payments'))
                                         @if ($item->status === 'paid')
                                             <span class="text-success fw-bold fs-"><strong>Opłacone</strong></span>
@@ -94,7 +122,7 @@
                                         @else
                                             {{ $item->status }}
                                         @endif
-                                    
+
                                     {{-- Samochody --}}
                                     @elseif ($col === 'status' && $routePrefix === 'cars')
                                         @if ($item->status === 'available')
@@ -106,12 +134,12 @@
                                         @else
                                             {{ $item->status }}
                                         @endif
-                                    
+
                                     {{-- Dane dla pozostałych przypadków --}}
                                     @else
                                         <strong>{{ $item->$col }}</strong>
                                     @endif
-                                </td>   
+                                </td>
                             @endforeach
 
                             <td>

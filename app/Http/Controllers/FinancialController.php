@@ -12,26 +12,26 @@ class FinancialController extends Controller
 {
     public function index()
     {
-        $userPesel = Auth::user()->pesel;  // załóżmy, że user ma pesel
+        $userPesel = Auth::user()->pesel;
 
-        // 1. Zarobki z wynajmu na przestrzeni ostatnich 12 miesięcy
         $now = Carbon::now();
+
+        // 1. Zarobki z wynajmu – ostatnie 30 dni
         $earningsData = Rental::select(
-            DB::raw("TO_CHAR(pickup_time, 'YYYY-MM') as month"),
+            DB::raw("TO_CHAR(pickup_time, 'YYYY-MM-DD') as day"),
             DB::raw('SUM(cost) as total_earnings')
         )
-        ->groupBy('month')
-        ->orderBy('month')
-        ->where('pickup_time', '>=', $now->copy()->subMonths(11)->startOfMonth())
-        ->pluck('total_earnings', 'month')->toArray();
+        ->where('pickup_time', '>=', $now->copy()->subDays(29)->startOfDay())
+        ->groupBy('day')
+        ->orderBy('day')
+        ->pluck('total_earnings', 'day')->toArray();
 
-        // Uzupełnienie miesięcy bez danych zerami
-        $months = [];
+        $days = [];
         $earnings = [];
-        for ($i = 0; $i < 12; $i++) {
-            $m = $now->copy()->subMonths(11 - $i)->format('Y-m');
-            $months[] = $m;
-            $earnings[] = $earningsData[$m] ?? 0;
+        for ($i = 0; $i < 30; $i++) {
+            $d = $now->copy()->subDays(29 - $i)->format('Y-m-d');
+            $days[] = $d;
+            $earnings[] = $earningsData[$d] ?? 0;
         }
 
         // 2. Ilość opłaconych i oczekujących płatności
@@ -42,30 +42,26 @@ class FinancialController extends Controller
         $paidCount = $paymentsStats['paid'] ?? 0;
         $pendingCount = $paymentsStats['pending'] ?? 0;
 
-        // 3. Popularność wynajmu (ilość wypożyczeń) na przestrzeni ostatnich 12 miesięcy
+        // 3. Popularność wynajmu – ostatnie 30 dni
         $rentalsData = Rental::select(
-            DB::raw("TO_CHAR(pickup_time, 'YYYY-MM') as month"),
+            DB::raw("TO_CHAR(pickup_time, 'YYYY-MM-DD') as day"),
             DB::raw('COUNT(*) as rentals_count')
         )
-        ->groupBy('month')
-        ->orderBy('month')
-        ->where('pickup_time', '>=', $now->copy()->subMonths(11)->startOfMonth())
-        ->pluck('rentals_count', 'month')->toArray();
+        ->where('pickup_time', '>=', $now->copy()->subDays(29)->startOfDay())
+        ->groupBy('day')
+        ->orderBy('day')
+        ->pluck('rentals_count', 'day')->toArray();
 
-        $popMonths = [];
         $popularity = [];
-        for ($i = 0; $i < 12; $i++) {
-            $m = $now->copy()->subMonths(11 - $i)->format('Y-m');
-            $popMonths[] = $m;
-            $popularity[] = $rentalsData[$m] ?? 0;
+        foreach ($days as $d) {
+            $popularity[] = $rentalsData[$d] ?? 0;
         }
 
         return view('finanse', [
-            'months' => $months,
+            'days' => $days,
             'earnings' => $earnings,
             'paidCount' => $paidCount,
             'pendingCount' => $pendingCount,
-            'popMonths' => $popMonths,
             'popularity' => $popularity,
         ]);
     }

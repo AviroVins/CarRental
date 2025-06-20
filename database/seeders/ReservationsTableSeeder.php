@@ -32,12 +32,12 @@ class ReservationsTableSeeder extends Seeder
         // Tablica do śledzenia zarezerwowanych przedziałów czasowych dla każdego auta (by uniknąć nakładania się)
         $reservedSlots = [];
 
-        foreach (range(1, 100) as $i) {
+        foreach (range(1, 300) as $i) {
             $plate = $faker->randomElement($plates);
 
             // Znajdź losowy wolny slot dla tego auta
             do {
-                $start = $faker->dateTimeBetween('-7 days', '+50 days');
+                $start = $faker->dateTimeBetween('-14 days', '+50 days');
                 $durationHours = rand(1, 4);
                 $end = (clone $start)->modify("+{$durationHours} hours");
 

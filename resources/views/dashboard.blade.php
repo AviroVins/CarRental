@@ -6,9 +6,9 @@
     </div>
 
     <div class="container-fluid">
-        <div class="row g-4"> {{-- odstęp między kartami --}}
-            
-            {{-- Lewy górny róg: raccoon.png --}}
+        <div class="row g-4">
+
+            {{-- Lewy górny róg: Bob :) --}}
             <div class="col-md-6">
                 <div class="card shadow h-100 d-flex flex-column align-items-center justify-content-center">
                     <div class="card-header w-100">Obrazek</div>
@@ -54,10 +54,9 @@
 @push('styles')
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
     <style>
-        /* Zaznaczenie dni wynajmu na zielono */
         .fc-daygrid-day.rental-day {
-            background-color: #53b553 !important;
-        }
+            background-color: #4821d1 !important;
+        }rgb(83, 106, 181)rgb(61, 99, 222)
     </style>
 @endpush
 
@@ -112,13 +111,11 @@
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('rentalCalendar');
             const rentalDays = @json($rentalDays ?? []);
+
             const rentalEvents = rentalDays.map(day => ({
-                title: 'Wynajem',
                 start: day,
-                allDay: true,
                 display: 'background',
-                backgroundColor: '#53b553',
-                textColor: '#000000'
+                backgroundColor: '#53b553'
             }));
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -129,5 +126,6 @@
 
             calendar.render();
         });
+
     </script>
 @endpush

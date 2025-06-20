@@ -40,8 +40,8 @@ class UsersTableSeeder extends Seeder
         ]);
 
         $faker->addProvider(new PeselProvider($faker));
-        
-        foreach (range(1, 98) as $i) {
+
+        foreach (range(1, 40) as $i) {
             User::create([
                 'pesel' => $faker->unique()->pesel(),
                 'first_name' => $faker->firstName,
