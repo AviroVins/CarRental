@@ -20,7 +20,7 @@ class UserFactory extends Factory
             'password' => Hash::make('password'),
             'phone_number' => $this->faker->phoneNumber,
             'has_driver_license' => $this->faker->boolean(),
-            'account_status' => $this->faker->randomElement(['active', 'inactive', 'blocked']),
+            'account_status' => $this->faker->randomElement(['active', 'inactive']),
             'created_at' => now(),
             'updated_at' => now(),
         ];

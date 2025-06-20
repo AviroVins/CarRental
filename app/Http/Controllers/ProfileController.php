@@ -6,15 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 use App\Http\Controllers\Controller;
 
 class ProfileController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
 
     public function edit()
     {
@@ -32,9 +29,10 @@ class ProfileController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->pesel, 'pesel')],
             'phone_number' => ['nullable', 'string', 'max:20'],
             'has_driver_license' => ['required', 'boolean'],
-            'account_status' => ['required', Rule::in(['active', 'inactive', 'blocked'])],
+            'account_status' => ['required', Rule::in(['active', 'inactive'])],
             'role' => ['required', Rule::in(['user', 'admin'])],
             'profile_photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'password' => ['nullable', 'string', 'min:6', 'confirmed'],
         ]);
 
         $user->first_name = $validated['first_name'];
@@ -45,13 +43,18 @@ class ProfileController extends Controller
         $user->account_status = $validated['account_status'];
         $user->role = $validated['role'];
 
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
         if ($request->hasFile('profile_photo')) {
-            if ($user->profile_photo) {
+            if ($user->profile_photo !== 'def.jpg') {
                 Storage::delete('profile_photos/' . $user->profile_photo);
             }
 
             $file = $request->file('profile_photo');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $randomDigits = rand(100, 999);
+            $filename = time() . $randomDigits . '.' . $file->getClientOriginalExtension();
             $file->storeAs('profile_photos', $filename);
 
             $user->profile_photo = $filename;

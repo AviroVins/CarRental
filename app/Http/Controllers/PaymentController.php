@@ -14,7 +14,7 @@ class PaymentController extends Controller
 
     public function index()
     {
-        $items = Payment::all();
+        $items = Payment::paginate(10);
         $columns = ['payment_id', 'rental_id', 'pesel', 'amount', 'status', 'method'];
         return view('shared.index', [
             'items' => $items,
@@ -29,9 +29,18 @@ class PaymentController extends Controller
         $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
-            'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
-            'statuses' => ['pending', 'completed', 'failed'],
-            'methods' => ['cash', 'card', 'transfer', 'blik'],
+            'rentals' => DB::table('rentals')
+                ->join('reservations', 'rentals.reservation_id', '=', 'reservations.reservation_id')
+                ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')
+                ->join('users', 'reservations.pesel', '=', 'users.pesel')
+                ->select(
+                    'rentals.rental_id',
+                    DB::raw("CONCAT('ID: ', rentals.rental_id, ' | Rezerwacja: ', rentals.reservation_id, ' | Samochód: ', reservations.plate_number, ' | Rezerwujący: ', users.first_name, ' ',users.last_name) AS label")
+                )
+                ->pluck('label', 'rental_id')
+                ->toArray(),
+            'statuses' => ['pending', 'paid'],
+            'methods' => ['card', 'blik'],
             'users' => DB::table('users')
                 ->select('pesel', DB::raw("CONCAT(first_name, ' ', last_name, ' (', pesel, ')') AS label"))
                 ->pluck('label', 'pesel')
@@ -53,9 +62,18 @@ class PaymentController extends Controller
         $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
-            'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
-            'statuses' => ['pending', 'completed', 'failed'],
-            'methods' => ['cash', 'card', 'transfer', 'blik'],
+            'rentals' => DB::table('rentals')
+                ->join('reservations', 'rentals.reservation_id', '=', 'reservations.reservation_id')
+                ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')
+                ->join('users', 'reservations.pesel', '=', 'users.pesel')
+                ->select(
+                    'rentals.rental_id',
+                    DB::raw("CONCAT('ID: ', rentals.rental_id, ' | Rezerwacja: ', rentals.reservation_id, ' | Samochód: ', reservations.plate_number, ' | Rezerwujący: ', users.first_name, ' ',users.last_name) AS label")
+                )
+                ->pluck('label', 'rental_id')
+                ->toArray(),
+            'statuses' => ['pending', 'paid'],
+            'methods' => ['card', 'blik'],
             'users' => DB::table('users')
                 ->select('pesel', DB::raw("CONCAT(first_name, ' ', last_name, ' (', pesel, ')') AS label"))
                 ->pluck('label', 'pesel')
@@ -78,8 +96,8 @@ class PaymentController extends Controller
             'rental_id' => ['required', 'exists:rentals,rental_id'],
             'pesel' => ['required', 'exists:users,pesel'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'in:pending,completed,failed'],
-            'method' => ['required', 'in:cash,card,transfer'],
+            'status' => ['required', 'in:pending,paid'],
+            'method' => ['required', 'in:card,blik'],
         ]);
 
         DB::table('payments')->insert($validated);
@@ -93,8 +111,8 @@ class PaymentController extends Controller
             'rental_id' => ['required', 'exists:rentals,rental_id'],
             'pesel' => ['required', 'exists:users,pesel'],
             'amount' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'in:pending,completed,failed'],
-            'method' => ['required', 'in:cash,card,transfer'],
+            'status' => ['required', 'in:pending,paid'],
+            'method' => ['required', 'in:card,blik'],
         ]);
 
         DB::table('payments')->where('payment_id', $payment_id)->update($validated);

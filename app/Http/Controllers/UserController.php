@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $items = User::all();
+        $items = User::paginate(10);
         $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
 
         return view('shared.index', [
@@ -32,18 +32,27 @@ class UserController extends Controller
     {
         $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'password'];
 
+        $extraData = [
+            'roles' => ['user', 'admin'],
+        ];
+
         return view('shared.form', [
             'item' => new User(),
             'columns' => $columns,
             'routePrefix' => $this->routePrefix,
             'title' => $this->title,
             'mode' => 'create',
+            'extraData' => $extraData,
         ]);
     }
 
     public function edit(User $user)
     {
-        $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
+        $columns = ['first_name', 'last_name', 'email', 'phone_number', 'role'];
+
+        $extraData = [
+            'roles' => ['user', 'admin'],
+        ];
 
         return view('shared.form', [
             'item' => $user,
@@ -51,6 +60,7 @@ class UserController extends Controller
             'routePrefix' => $this->routePrefix,
             'title' => $this->title,
             'mode' => 'edit',
+            'extraData' => $extraData,
         ]);
     }
 
@@ -76,23 +86,25 @@ class UserController extends Controller
     public function update(Request $request, $pesel): RedirectResponse
     {
         $validated = $request->validate([
-            'pesel' => ['required', 'string', 'unique:users,pesel', new ValidPesel],
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|unique:users,email,' . $pesel . ',pesel',
             'phone_number' => 'nullable|string|max:20',
             'role' => 'required|string|in:admin,user',
-            'password' => 'required|string|min:6',
+            'password' => 'nullable|string|min:6',
         ]);
 
         if ($request->filled('password')) {
             $validated['password'] = bcrypt($request->input('password'));
+        } else {
+            unset($validated['password']);
         }
 
         DB::table('users')->where('pesel', $pesel)->update($validated);
 
         return redirect()->route('users.index')->with('success', 'Użytkownik zaktualizowany.');
     }
+
 
     public function destroy($pesel): RedirectResponse
     {

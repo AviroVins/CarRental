@@ -23,7 +23,7 @@
             @endif
 
             @foreach($columns as $col)
-                @if($mode === 'create' && $col === 'rental_id')
+                @if($mode === 'create' && $col === 'rental_id' && $routePrefix !== 'payments')
                     @continue
                 @endif
 
@@ -48,15 +48,21 @@
                         </select>
 
                     @elseif($col === 'rental_id')
-                        <select id="{{ $col }}" name="{{ $col }}" required
-                            class="form-control @error($col) is-invalid @enderror">
-                            <option value="">-- Wybierz wypożyczenie --</option>
-                            @foreach($extraData['rentals'] ?? [] as $rental_id => $label)
-                                <option value="{{ $rental_id }}" {{ old($col, $item->$col ?? '') == $rental_id ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @if($mode === 'edit' && $routePrefix === 'rentals')
+                            <input type="hiddentex" id="{{ $col }}" name="{{ $col }}" readonly
+                                value="{{ old($col, $item->$col ?? '') }}"
+                                class="form-control-plaintext">
+                        @else
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="form-control @error($col) is-invalid @enderror">
+                                <option value="">-- Wybierz wypożyczenie --</option>
+                                @foreach($extraData['rentals'] ?? [] as $rental_id => $label)
+                                    <option value="{{ $rental_id }}" {{ old($col, $item->$col ?? '') == $rental_id ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
 
                     @elseif($col === 'pesel')
                         @if(in_array($col, $forceInput) || $routePrefix === 'users')
@@ -93,15 +99,25 @@
                         @endif
 
                     @elseif($col === 'status')
-                        <select id="{{ $col }}" name="{{ $col }}" required
-                            class="form-control @error($col) is-invalid @enderror">
-                            <option value="">-- Wybierz status --</option>
-                            @foreach($extraData['statuses'] ?? [] as $status)
-                                <option value="{{ $status }}" {{ old($col, $item->$col ?? '') == $status ? 'selected' : '' }}>
-                                    {{ ucfirst($status) }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @if($mode === 'create' && $routePrefix === 'user.reservations')
+                            @continue
+
+                        @elseif($mode === 'edit' && $routePrefix === 'user.reservations')
+                            <input type="text" id="{{ $col }}" name="{{ $col }}" readonly
+                                value="{{ old($col, $item->$col ?? '') }}"
+                                class="form-control-plaintext">
+
+                        @else
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="form-control @error($col) is-invalid @enderror">
+                                <option value="">-- Wybierz status --</option>
+                                @foreach($extraData['statuses'] ?? [] as $status)
+                                    <option value="{{ $status }}" {{ old($col, $item->$col ?? '') == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
 
                     @elseif($col === 'method')
                         <select id="{{ $col }}" name="{{ $col }}" required
@@ -110,6 +126,17 @@
                             @foreach($extraData['methods'] ?? [] as $method)
                                 <option value="{{ $method }}" {{ old($col, $item->$col ?? '') == $method ? 'selected' : '' }}>
                                     {{ ucfirst($method) }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                    @elseif($col === 'role')
+                        <select id="{{ $col }}" name="{{ $col }}" required
+                            class="form-control @error($col) is-invalid @enderror">
+                            <option value="">-- Wybierz rolę --</option>
+                            @foreach($extraData['roles'] ?? [] as $role)
+                                <option value="{{ $role }}" {{ old($col, $item->$col ?? '') == $role ? 'selected' : '' }}>
+                                    {{ ucfirst($role) }}
                                 </option>
                             @endforeach
                         </select>

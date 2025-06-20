@@ -20,7 +20,7 @@ class PaymentsTableSeeder extends Seeder
                 'pesel' => $faker->randomElement($userIds),
                 'amount' => $faker->numberBetween(30, 200),
                 'status' => $faker->randomElement(['pending', 'paid']),
-                'method' => $faker->randomElement(['card', 'cash', 'blik']),
+                'method' => $faker->randomElement(['card', 'blik']),
             ]);
         }
     }

@@ -13,7 +13,7 @@ class PaymentFactory extends Factory
             'pesel' => \App\Models\User::factory(),
             'amount' => $this->faker->randomFloat(2, 30, 200),
             'status' => $this->faker->randomElement(['pending', 'paid']),
-            'method' => $this->faker->randomElement(['card', 'cash', 'blik']),
+            'method' => $this->faker->randomElement(['card', 'blik']),
         ];
     }
 }
