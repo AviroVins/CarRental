@@ -8,15 +8,15 @@ return new class extends Migration {
     public function up(): void {
         Schema::create('rentals', function (Blueprint $table) {
             $table->id('rental_id');
-            
-            $table->unsignedBigInteger('reservation_id');
-            $table->foreign('reservation_id')->references('reservation_id')->on('reservations')->onDelete('cascade');
 
-            $table->string('pesel');
-            $table->foreign('pesel')->references('pesel')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('reservation_id')->nullable();
+            $table->foreign('reservation_id')->references('reservation_id')->on('reservations')->onDelete('set null');
 
-            $table->string('plate_number');
-            $table->foreign('plate_number')->references('plate_number')->on('cars')->onDelete('cascade');
+            $table->string('pesel')->nullable();
+            $table->foreign('pesel')->references('pesel')->on('users')->onDelete('set null');
+
+            $table->string('plate_number')->nullable();
+            $table->foreign('plate_number')->references('plate_number')->on('cars')->onDelete('set null');
 
             $table->timestamp('pickup_time')->nullable();
             $table->timestamp('return_time')->nullable();

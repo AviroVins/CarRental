@@ -9,6 +9,7 @@ use App\Http\Controllers\CarController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\FinancialController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Car;
 use App\Http\Controllers\DashboardController;
@@ -28,6 +29,9 @@ Route::get('/welcome', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/finanse', [FinancialController::class, 'index'])
+    ->middleware('auth')
+    ->name('finanse.index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

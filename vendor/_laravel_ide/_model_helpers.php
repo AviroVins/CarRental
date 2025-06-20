@@ -639,9 +639,9 @@ namespace App\Models {
      * @property int|null $distance_km
      * @property string|null $return_time
      * @property string|null $pickup_time
-     * @property string $plate_number
-     * @property string $pesel
-     * @property int $reservation_id
+     * @property string|null $plate_number
+     * @property string|null $pesel
+     * @property int|null $reservation_id
      * @property int $rental_id
      * @property-read \App\Models\Reservation $reservation
      * @property-read \App\Models\User $user

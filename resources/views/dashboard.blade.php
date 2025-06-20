@@ -5,43 +5,74 @@
         Zalogowano!
     </div>
 
-    <div class="row">
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    Najczęściej wynajmowane pojazdy
-                </div>
-                <div class="card-body text-center">
-                    <canvas id="pastChart" style="max-height: 300px;"></canvas>
+    <div class="container-fluid">
+        <div class="row g-4"> {{-- odstęp między kartami --}}
+            
+            {{-- Lewy górny róg: raccoon.png --}}
+            <div class="col-md-6">
+                <div class="card shadow h-100 d-flex flex-column align-items-center justify-content-center">
+                    <div class="card-header w-100">Obrazek</div>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+                        <img src="{{ asset('images/raccoon.png') }}" alt="Raccoon" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header">
-                    Planowane / bieżące rezerwacje
+            {{-- Prawy górny róg: kalendarz --}}
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header">Twój kalendarz wynajmów</div>
+                    <div class="card-body" style="height: 300px;">
+                        <div id="rentalCalendar" style="height: 100%;"></div>
+                    </div>
                 </div>
-                <div class="card-body text-center">
-                    <canvas id="futureChart" style="max-height: 300px;"></canvas>
+            </div>
+
+            {{-- Lewy dolny róg: Najczęściej wynajmowane pojazdy --}}
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header">Najczęściej wynajmowane pojazdy</div>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+                        <canvas id="pastChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Prawy dolny róg: Planowane / bieżące rezerwacje --}}
+            <div class="col-md-6">
+                <div class="card shadow h-100">
+                    <div class="card-header">Planowane / bieżące rezerwacje</div>
+                    <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+                        <canvas id="futureChart" style="max-height: 100%; max-width: 100%;"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
 
+@push('styles')
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
+    <style>
+        /* Zaznaczenie dni wynajmu na zielono */
+        .fc-daygrid-day.rental-day {
+            background-color: #53b553 !important;
+        }
+    </style>
+@endpush
+
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
     <script>
         const commonOptions = {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: {
-                        color: '#3f3f40'
-                    }
+                    labels: { color: '#3f3f40' }
                 }
             }
         };
@@ -59,10 +90,7 @@
             type: 'pie',
             data: {
                 labels: pastLabels,
-                datasets: [{
-                    data: pastData,
-                    backgroundColor: pastColors,
-                }]
+                datasets: [{ data: pastData, backgroundColor: pastColors }]
             },
             options: commonOptions
         });
@@ -76,12 +104,30 @@
             type: 'pie',
             data: {
                 labels: futureLabels,
-                datasets: [{
-                    data: futureData,
-                    backgroundColor: futureColors,
-                }]
+                datasets: [{ data: futureData, backgroundColor: futureColors }]
             },
             options: commonOptions
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('rentalCalendar');
+            const rentalDays = @json($rentalDays ?? []);
+            const rentalEvents = rentalDays.map(day => ({
+                title: 'Wynajem',
+                start: day,
+                allDay: true,
+                display: 'background',
+                backgroundColor: '#53b553',
+                textColor: '#000000'
+            }));
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                height: '100%',
+                events: rentalEvents
+            });
+
+            calendar.render();
         });
     </script>
 @endpush

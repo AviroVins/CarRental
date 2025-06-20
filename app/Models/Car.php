@@ -11,7 +11,7 @@ class Car extends Model
     protected $keyType = 'string';
     public $timestamps = false;
 
-    protected $fillable = ['plate_number', 'maker', 'model', 'year', 'status'];
+    protected $fillable = ['plate_number', 'maker', 'model', 'year', 'status', 'rate'];
 
     public function reservations() {
         return $this->hasMany(Reservation::class, 'plate_number', 'plate_number');

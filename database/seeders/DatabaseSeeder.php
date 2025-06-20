@@ -16,13 +16,4 @@ class DatabaseSeeder extends Seeder
         PaymentsTableSeeder::class,
     ]);
     }
-
-    // public function run(): void {
-    //     \App\Models\User::factory(10)->create();
-    //     \App\Models\Car::factory(5)->create();
-
-    //     \App\Models\Reservation::factory(5)->create();
-    //     \App\Models\Rental::factory(5)->create();
-    //     \App\Models\Payment::factory(5)->create();
-    // }
 }

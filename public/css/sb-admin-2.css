@@ -4031,13 +4031,13 @@ input[type="button"].btn-block {
 }
 
 .nav-link.disabled {
-  color: #858796;
+  color: #968594;
   pointer-events: none;
   cursor: default;
 }
 
 .nav-tabs {
-  border-bottom: 1px solid #dddfeb;
+  border-bottom: 1px solid #d626d6;
 }
 
 .nav-tabs .nav-link {

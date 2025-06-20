@@ -1,4 +1,4 @@
-<ul class="navbar-nav bg-gradient-light sidebar sidebar-light accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-gradient-light sidebar sidebar-success accordion" id="accordionSidebar">
 
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('welcome') }}">
         <div class="sidebar-brand-icon rotate-n-15">
@@ -12,7 +12,7 @@
     <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span></a>
+            <span>Strona Główna</span></a>
     </li>
 
     @if(auth()->check() && (auth()->user()->role === 'user' || auth()->user()->role === 'admin'))
@@ -38,7 +38,6 @@
     @if(auth()->check() && auth()->user()->role === 'admin')
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
         <div class="sidebar-heading">
             Zarządzanie
         </div>
@@ -71,6 +70,12 @@
             <a class="nav-link" href="{{ route('payments.index') }}">
                 <i class="fas fa-fw fa-money-bill-wave"></i>
                 <span>Płatności</span></a>
+        </li>
+
+        <li class="nav-item {{ request()->routeIs('finanse.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('finanse.index') }}">
+                <i class="fas fa-fw fa-money-bill-wave"></i>
+                <span>Finanse</span></a>
         </li>
 
     @endif

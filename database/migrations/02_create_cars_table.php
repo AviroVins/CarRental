@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('model');
             $table->integer('year');
             $table->string('status')->default('available');
+            $table->decimal('rate', 10, 2);
             $table->timestamps();
         });
     }
