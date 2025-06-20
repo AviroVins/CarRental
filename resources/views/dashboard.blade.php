@@ -54,10 +54,9 @@
 @push('styles')
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
     <style>
-        /* Zaznaczenie dni wynajmu na zielono */
         .fc-daygrid-day.rental-day {
-            background-color: #53b553 !important;
-        }
+            background-color: #4821d1 !important;
+        }rgb(83, 106, 181)rgb(61, 99, 222)
     </style>
 @endpush
 
