@@ -11,7 +11,7 @@ class ReservationController extends Controller
 {
     public function index()
     {
-        $items = Reservation::all();
+        $items = Reservation::paginate(10);
         $columns = ['reservation_id', 'pesel', 'plate_number', 'start_time', 'end_time', 'status'];
 
         return view('shared.index', [
@@ -34,7 +34,7 @@ class ReservationController extends Controller
 
             'cars' => Car::pluck('plate_number', 'plate_number')->toArray(),
 
-            'statuses' => ['reserved', 'cancelled', 'completed'],
+            'statuses' => ['reserved', 'in_progress', 'completed'],
         ];
 
         return view('shared.form', [
@@ -59,7 +59,7 @@ class ReservationController extends Controller
 
             'cars' => Car::pluck('plate_number', 'plate_number')->toArray(),
 
-            'statuses' => ['reserved', 'cancelled', 'completed'],
+            'statuses' => ['reserved', 'in_progress', 'completed'],
         ];
 
         return view('shared.form', [
@@ -79,7 +79,7 @@ class ReservationController extends Controller
             'plate_number' => 'required|exists:cars,plate_number',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after_or_equal:start_time',
-            'status' => 'required|in:reserved,cancelled,completed',
+            'status' => 'required|in:reserved,in_progress,completed',
         ]);
 
         Reservation::create($validated);
@@ -94,7 +94,7 @@ class ReservationController extends Controller
             'plate_number' => 'required|exists:cars,plate_number',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after_or_equal:start_time',
-            'status' => 'required|in:reserved,cancelled,completed',
+            'status' => 'required|in:reserved,in_progress,completed',
         ]);
 
         Reservation::where('reservation_id', $reservation_id)->update($validated);

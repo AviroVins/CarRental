@@ -21,7 +21,7 @@ class ReservationsTableSeeder extends Seeder
                 'plate_number' => $faker->randomElement($plates),
                 'start_time' => $start,
                 'end_time' => (clone $start)->modify('+'.rand(1,4).' hours'),
-                'status' => $faker->randomElement(['reserved', 'cancelled', 'completed']),
+                'status' => $faker->randomElement(['reserved', 'in_progress', 'completed']),
             ]);
         }
     }

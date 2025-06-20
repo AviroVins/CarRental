@@ -16,7 +16,7 @@ class CarController extends Controller
 
     {
 
-        $items = Car::all();
+        $items = Car::paginate(10);
         $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
 
         return view('shared.index', [

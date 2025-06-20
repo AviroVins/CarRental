@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $items = User::all();
+        $items = User::paginate(10);
         $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'profile_photo'];
 
         return view('shared.index', [

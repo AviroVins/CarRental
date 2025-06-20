@@ -4,12 +4,14 @@
 
 <h1 class="h3 mb-4 text-gray-800">{{ $title }}</h1>
 
-<a href="{{ route($routePrefix . '.create') }}" class="btn btn-success mb-4">Dodaj nowy</a>
-
 @if(session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
     </div>
+@endif
+
+@if ($routePrefix !== 'user.payments')
+    <a href="{{ route($routePrefix . '.create') }}" class="btn btn-success mb-4">Dodaj nowy</a>
 @endif
 
 <div class="card shadow mb-4">
@@ -19,7 +21,32 @@
                 <thead>
                     <tr>
                         @foreach($columns as $col)
-                            <th>{{ ucfirst($col) }}</th>
+                            <th>
+                                {{-- Użytkownik-Płatności --}}
+                                @if($col === 'rental_id' && $routePrefix === 'user.payments')
+                                    Samochód
+                                @elseif($col === 'payment_id' && $routePrefix === 'user.payments')
+                                    Identyfikator Płatności
+                                @elseif($col === 'amount' && $routePrefix === 'user.payments')
+                                    Kwota [PLN]
+                                @elseif($col === 'method' && $routePrefix === 'user.payments')
+                                    Metoda Płatności
+
+                                {{-- Użytkownik-Rezerwacje --}}
+                                @elseif($col === 'reservation_id' && $routePrefix === 'user.reservations')
+                                    Identyfikator Rezerwacji
+                                @elseif($col === 'plate_number' && $routePrefix === 'user.reservations')
+                                    Samochód
+                                @elseif($col === 'start_time' && $routePrefix === 'user.reservations')
+                                    Start
+                                @elseif($col === 'end_time' && $routePrefix === 'user.reservations')
+                                    Zakończenie
+                                
+                                {{-- Kolumny dla pozostałych przypadków --}}
+                                @else
+                                    {{ ucfirst(str_replace('_', ' ', $col)) }}
+                                @endif
+                            </th>
                         @endforeach
                         <th>Akcje</th>
                     </tr>
@@ -28,15 +55,95 @@
                     @foreach($items as $item)
                         <tr>
                             @foreach($columns as $col)
-                                <td>{{ $item->$col }}</td>
+                                <td>
+                                    {{--- Tłumaczenie dla wyglądu :> ---}}
+
+                                    {{-- Użytkownik-Płatności --}}
+                                    @if ($col === 'rental_id' && $routePrefix === 'user.payments')
+                                        <strong>{{ $item->rental && $item->rental->car ? $item->rental->car->make . ' ' . $item->rental->car->model . ' - [' . $item->rental->car->plate_number . ']' : 'Brak danych' }}</strong>
+                                    
+                                    @elseif ($col === 'status' && $routePrefix === 'user.payments')
+                                        @if ($item->status === 'paid')
+                                            <span class="text-success fw-bold fs-"><strong>Opłacone</strong></span>
+                                        @elseif ($item->status === 'pending')
+                                            <span class="text-primary fw-bold"><strong>Oczekuje na zapłatę</strong></span>
+                                        @else
+                                            {{ $item->status }}
+                                        @endif
+
+                                    @elseif ($col === 'method' && $routePrefix === 'user.payments')
+                                        @if ($item->method === 'card')
+                                            <strong>Karta</strong>
+                                        @elseif ($item->method === 'blik')
+                                            <strong>Blik</strong>
+                                        @else
+                                            <strong>{{ $item->method }}</strong>
+                                        @endif
+
+                                    {{-- Użytkownik-Rezerwacje --}}
+                                    @elseif ($col === 'plate_number' && $routePrefix === 'user.reservations')
+                                        <strong>{{ $item->car ? $item->car->make . ' ' . $item->car->model . ' - [' . $item->car->plate_number . ']' : 'Brak danych' }}</strong>
+
+                                    @elseif ($col === 'status' && $routePrefix === 'user.reservations')
+                                        @if ($item->status === 'reserved')
+                                            <span class="text-primary fw-bold"><strong>Zarezerwowany</strong></span>
+                                        @elseif ($item->status === 'in_progress')
+                                            <span class="text-warning fw-bold"><strong>Realizowany</strong></span>
+                                        @elseif ($item->status === 'completed')
+                                            <span class="text-success fw-bold"><strong>Zakończony</strong></span>
+                                        @else
+                                            {{ $item->status }}
+                                        @endif
+                                    {{-- Dane dla pozostałych przypadków --}}
+                                    @else
+                                        <strong>{{ $item->$col }}</strong>
+                                    @endif
+                                </td>   
                             @endforeach
+
                             <td>
-                                <a href="{{ route($routePrefix . '.edit', $item) }}" class="btn btn-primary btn-sm">Edytuj</a>
-                                <form action="{{ route($routePrefix . '.destroy', $item) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Na pewno chcesz usunąć?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">Usuń</button>
-                                </form>
+                                @if ($routePrefix === 'user.payments')
+                                    @if ($item->status === 'pending')
+                                        <form action="{{ route('user.payments.pay', $item) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success btn-sm">Zapłać</button>
+                                        </form>
+                                        <form action="{{ route('user.payments.changePayment', $item) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-primary btn-sm">Zmień metodę płatności</button>
+                                        </form>
+                                    @else
+                                        <p>Płatność zakończona</p>
+                                    @endif
+
+                                @elseif ($routePrefix === 'user.reservations')
+                                    @if ($item->status === 'reserved')
+                                        <a href="{{ route($routePrefix . '.edit', $item) }}" class="btn btn-primary btn-sm">Edytuj</a>
+                                        <form action="{{ route($routePrefix . '.destroy', $item) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Na pewno chcesz usunąć?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger btn-sm">Zrezygnuj</button>
+                                        </form>
+                                    @elseif ($item->status === 'in_progress')
+                                        <form action="{{ route('user.reservations.finish', $item) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Zakończyć rezerwację?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button class="btn btn-success btn-sm">Zakończ</button>
+                                        </form>
+                                    @else
+                                        <p>Wynajem zakończony</p>
+                                    @endif
+
+                                @else
+                                    <a href="{{ route($routePrefix . '.edit', $item) }}" class="btn btn-primary btn-sm">Edytuj</a>
+                                    <form action="{{ route($routePrefix . '.destroy', $item) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Na pewno chcesz usunąć?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger btn-sm">Usuń</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -44,7 +151,7 @@
             </table>
 
             {{-- Paginacja --}}
-            <div class="mt-3">
+            <div class="d-flex justify-content-center">
                 {{ $items->links() }}
             </div>
         </div>

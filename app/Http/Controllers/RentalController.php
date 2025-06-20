@@ -17,7 +17,7 @@ class RentalController extends Controller
 
     public function index()
     {
-        $items = Rental::all();
+        $items = Rental::paginate(10);
         $columns = ['rental_id', 'reservation_id', 'pesel', 'plate_number', 'pickup_time', 'return_time', 'distance_km', 'cost'];
         return view('shared.index', [
             'items' => $items,

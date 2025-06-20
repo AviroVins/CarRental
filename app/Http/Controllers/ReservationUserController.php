@@ -7,6 +7,7 @@ use App\Models\Reservation;
 use App\Models\Car;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReservationUserController extends Controller
 {
@@ -14,7 +15,7 @@ class ReservationUserController extends Controller
     {
         $userPesel = Auth::user()->pesel;
 
-        $items = Reservation::where('pesel', $userPesel)->get();
+        $items = Reservation::where('pesel', $userPesel)->with('car')->paginate(10);
         $columns = ['reservation_id', 'plate_number', 'start_time', 'end_time', 'status'];
 
         return view('shared.index', [
@@ -27,7 +28,7 @@ class ReservationUserController extends Controller
 
     public function create()
     {
-        $columns = ['plate_number', 'start_time', 'end_time', 'status'];
+        $columns = ['plate_number', 'start_time', 'end_time'];
 
         $cars = Car::all()->mapWithKeys(function ($car) {
             return [
@@ -37,7 +38,6 @@ class ReservationUserController extends Controller
 
         $extraData = [
             'cars' => $cars,
-            'statuses' => ['pending', 'confirmed', 'cancelled'],
         ];
 
         return view('shared.form', [
@@ -50,11 +50,28 @@ class ReservationUserController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'plate_number' => 'required|string|exists:cars,plate_number',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date|after:start_time',
+        ]);
+
+        $data = $request->only(['plate_number', 'start_time', 'end_time']);
+        $data['pesel'] = Auth::user()->pesel;
+        $data['status'] = 'reserved';
+
+        DB::table('reservations')->insert($data);
+
+        return redirect()->route('user.reservations.index')->with('success', 'Rezerwacja została dodana.');
+    }
+
     public function edit(Reservation $reservation)
     {
         $userPesel = Auth::user()->pesel;
 
-        $columns = ['plate_number', 'start_time', 'end_time', 'status'];
+        $columns = ['plate_number', 'start_time', 'end_time'];
 
         $cars = Car::all()->mapWithKeys(function ($car) {
             return [
@@ -64,7 +81,7 @@ class ReservationUserController extends Controller
 
         $extraData = [
             'cars' => $cars,
-            'statuses' => ['pending', 'confirmed', 'cancelled'],
+            'current_status' => $reservation->status,
         ];
 
         return view('shared.form', [
@@ -77,24 +94,6 @@ class ReservationUserController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-
-        $request->validate([
-            'plate_number' => 'required|string|exists:cars,plate_number',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'status' => 'required|string|in:pending,confirmed,cancelled',
-        ]);
-
-        $data = $request->only(['plate_number', 'start_time', 'end_time', 'status']);
-        $data['pesel'] = Auth::user()->pesel;
-
-        DB::table('reservations')->insert($data);
-
-        return redirect()->route('user.reservations.index')->with('success', 'Rezerwacja została dodana.');
-    }
-
     public function update(Request $request, Reservation $reservation)
     {
         $userPesel = Auth::user()->pesel;
@@ -103,10 +102,9 @@ class ReservationUserController extends Controller
             'plate_number' => 'required|string|exists:cars,plate_number',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'status' => 'required|string|in:pending,confirmed,cancelled',
         ]);
 
-        $data = $request->only(['plate_number', 'start_time', 'end_time', 'status']);
+        $data = $request->only(['plate_number', 'start_time', 'end_time']);
         $data['pesel'] = $userPesel;
 
         DB::table('reservations')
@@ -123,5 +121,18 @@ class ReservationUserController extends Controller
         DB::table('reservations')->where('reservation_id', $reservation->reservation_id)->delete();
 
         return redirect()->route('user.reservations.index')->with('success', 'Rezerwacja została usunięta.');
+    }
+
+    public function finish(Reservation $reservation)
+    {
+        if ($reservation->status !== 'in_progress') {
+            return redirect()->route('user.reservations.index')->with('error', 'Tylko aktywne rezerwacje można zakończyć.');
+        }
+
+        $reservation->end_time = Carbon::now();
+        $reservation->status = 'completed';
+        $reservation->save();
+
+        return redirect()->route('user.reservations.index')->with('success', 'Rezerwacja została zakończona.');
     }
 }

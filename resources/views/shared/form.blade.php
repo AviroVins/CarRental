@@ -93,15 +93,25 @@
                         @endif
 
                     @elseif($col === 'status')
-                        <select id="{{ $col }}" name="{{ $col }}" required
-                            class="form-control @error($col) is-invalid @enderror">
-                            <option value="">-- Wybierz status --</option>
-                            @foreach($extraData['statuses'] ?? [] as $status)
-                                <option value="{{ $status }}" {{ old($col, $item->$col ?? '') == $status ? 'selected' : '' }}>
-                                    {{ ucfirst($status) }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @if($mode === 'create' && $routePrefix === 'user.reservations')
+                            @continue
+
+                        @elseif($mode === 'edit' && $routePrefix === 'user.reservations')
+                            <input type="text" id="{{ $col }}" name="{{ $col }}" readonly
+                                value="{{ old($col, $item->$col ?? '') }}"
+                                class="form-control-plaintext">
+
+                        @else
+                            <select id="{{ $col }}" name="{{ $col }}" required
+                                class="form-control @error($col) is-invalid @enderror">
+                                <option value="">-- Wybierz status --</option>
+                                @foreach($extraData['statuses'] ?? [] as $status)
+                                    <option value="{{ $status }}" {{ old($col, $item->$col ?? '') == $status ? 'selected' : '' }}>
+                                        {{ ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
 
                     @elseif($col === 'method')
                         <select id="{{ $col }}" name="{{ $col }}" required

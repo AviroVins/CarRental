@@ -1,7 +1,5 @@
-<!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-light sidebar sidebar-light accordion" id="accordionSidebar">
 
-    <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('welcome') }}">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-car"></i>
@@ -9,26 +7,35 @@
         <div class="sidebar-brand-text mx-3">Wypożyczalnia</div>
     </a>
 
-    <!-- Divider -->
     <hr class="sidebar-divider my-0">
 
-    <!-- Nav Item - Dashboard -->
     <li class="nav-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
         <a class="nav-link" href="{{ route('dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
 
+    @if(auth()->check() && (auth()->user()->role === 'user' || auth()->user()->role === 'admin'))
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">
+            Moje konto
+        </div>
+
+        <li class="nav-item {{ request()->routeIs('user.reservations.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('user.reservations.index') }}">
+                <i class="fas fa-fw fa-calendar-check"></i>
+                <span>Moje rezerwacje</span></a>
+        </li>
+
+        <li class="nav-item {{ request()->routeIs('user.payments.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('user.payments.index') }}">
+                <i class="fas fa-fw fa-credit-card"></i>
+                <span>Moje płatności</span></a>
+        </li>
+    @endif
+
     @if(auth()->check() && auth()->user()->role === 'admin')
-        {{-- <!-- Linki tylko dla admina -->
-        <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.dashboard') }}">
-                <i class="fas fa-fw fa-cogs"></i>
-                <span>Panel Administratora</span>
-            </a>
-        </li> --}}
-        
-        <!-- Divider -->
         <hr class="sidebar-divider">
 
         <!-- Heading -->
@@ -36,7 +43,6 @@
             Zarządzanie
         </div>
 
-        <!-- Nav Items -->
         <li class="nav-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('users.index') }}">
                 <i class="fas fa-fw fa-users"></i>
@@ -69,10 +75,6 @@
 
     @endif
 
-    
-
-    <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
 </ul>
-<!-- End of Sidebar -->
