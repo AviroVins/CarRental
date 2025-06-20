@@ -29,7 +29,16 @@ class PaymentController extends Controller
         $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
-            'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
+            'rentals' => DB::table('rentals')
+                ->join('reservations', 'rentals.reservation_id', '=', 'reservations.reservation_id')
+                ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')
+                ->join('users', 'reservations.pesel', '=', 'users.pesel')
+                ->select(
+                    'rentals.rental_id',
+                    DB::raw("CONCAT('ID: ', rentals.rental_id, ' | Rezerwacja: ', rentals.reservation_id, ' | Samochód: ', reservations.plate_number, ' | Rezerwujący: ', users.first_name, ' ',users.last_name) AS label")
+                )
+                ->pluck('label', 'rental_id')
+                ->toArray(),
             'statuses' => ['pending', 'paid'],
             'methods' => ['card', 'blik'],
             'users' => DB::table('users')
@@ -53,7 +62,16 @@ class PaymentController extends Controller
         $columns = ['rental_id', 'pesel', 'amount', 'status', 'method'];
 
         $extraData = [
-            'rentals' => DB::table('rentals')->pluck('rental_id', 'rental_id')->toArray(),
+            'rentals' => DB::table('rentals')
+                ->join('reservations', 'rentals.reservation_id', '=', 'reservations.reservation_id')
+                ->join('cars', 'reservations.plate_number', '=', 'cars.plate_number')
+                ->join('users', 'reservations.pesel', '=', 'users.pesel')
+                ->select(
+                    'rentals.rental_id',
+                    DB::raw("CONCAT('ID: ', rentals.rental_id, ' | Rezerwacja: ', rentals.reservation_id, ' | Samochód: ', reservations.plate_number, ' | Rezerwujący: ', users.first_name, ' ',users.last_name) AS label")
+                )
+                ->pluck('label', 'rental_id')
+                ->toArray(),
             'statuses' => ['pending', 'paid'],
             'methods' => ['card', 'blik'],
             'users' => DB::table('users')

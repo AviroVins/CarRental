@@ -32,7 +32,7 @@ class CarController extends Controller
         $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
 
         $extraData = [
-            'statuses' => ['available', 'rented', 'maintenance', 'inactive'],
+            'statuses' => ['available', 'rented', 'maintenance'],
         ];
 
         return view('shared.form', [
@@ -50,7 +50,7 @@ class CarController extends Controller
         $columns = ['plate_number', 'maker', 'model', 'year', 'status'];
 
         $extraData = [
-            'statuses' => ['available', 'rented', 'maintenance', 'inactive'],
+            'statuses' => ['available', 'rented', 'maintenance'],
         ];
 
         return view('shared.form', [

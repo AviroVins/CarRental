@@ -58,11 +58,11 @@
                                 <td>
                                     {{--- Tłumaczenie dla wyglądu :> ---}}
 
-                                    {{-- Użytkownik-Płatności --}}
+                                    {{-- Użytkownik-Płatności  oraz Płatności --}}
                                     @if ($col === 'rental_id' && $routePrefix === 'user.payments')
                                         <strong>{{ $item->rental && $item->rental->car ? $item->rental->car->make . ' ' . $item->rental->car->model . ' - [' . $item->rental->car->plate_number . ']' : 'Brak danych' }}</strong>
                                     
-                                    @elseif ($col === 'status' && $routePrefix === 'user.payments')
+                                    @elseif ($col === 'status' && ($routePrefix === 'user.payments' || $routePrefix === 'payments'))
                                         @if ($item->status === 'paid')
                                             <span class="text-success fw-bold fs-"><strong>Opłacone</strong></span>
                                         @elseif ($item->status === 'pending')
@@ -80,11 +80,11 @@
                                             <strong>{{ $item->method }}</strong>
                                         @endif
 
-                                    {{-- Użytkownik-Rezerwacje --}}
+                                    {{-- Użytkownik-Rezerwacje oraz Rezerwacje --}}
                                     @elseif ($col === 'plate_number' && $routePrefix === 'user.reservations')
                                         <strong>{{ $item->car ? $item->car->make . ' ' . $item->car->model . ' - [' . $item->car->plate_number . ']' : 'Brak danych' }}</strong>
 
-                                    @elseif ($col === 'status' && $routePrefix === 'user.reservations')
+                                    @elseif ($col === 'status' && ($routePrefix === 'user.reservations' || $routePrefix === 'reservations'))
                                         @if ($item->status === 'reserved')
                                             <span class="text-primary fw-bold"><strong>Zarezerwowany</strong></span>
                                         @elseif ($item->status === 'in_progress')
@@ -94,6 +94,19 @@
                                         @else
                                             {{ $item->status }}
                                         @endif
+                                    
+                                    {{-- Samochody --}}
+                                    @elseif ($col === 'status' && $routePrefix === 'cars')
+                                        @if ($item->status === 'available')
+                                            <span class="text-success fw-bold"><strong>Dostępny</strong></span>
+                                        @elseif ($item->status === 'maintenance')
+                                            <span class="text-warning fw-bold"><strong>Warsztat</strong></span>
+                                        @elseif ($item->status === 'rented')
+                                            <span class="text-danger fw-bold"><strong>Wynajęty</strong></span>
+                                        @else
+                                            {{ $item->status }}
+                                        @endif
+                                    
                                     {{-- Dane dla pozostałych przypadków --}}
                                     @else
                                         <strong>{{ $item->$col }}</strong>

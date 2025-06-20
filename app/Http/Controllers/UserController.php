@@ -32,12 +32,17 @@ class UserController extends Controller
     {
         $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role', 'password'];
 
+        $extraData = [
+            'roles' => ['user', 'admin'],
+        ];
+
         return view('shared.form', [
             'item' => new User(),
             'columns' => $columns,
             'routePrefix' => $this->routePrefix,
             'title' => $this->title,
             'mode' => 'create',
+            'extraData' => $extraData,
         ]);
     }
 
@@ -45,12 +50,17 @@ class UserController extends Controller
     {
         $columns = ['pesel', 'first_name', 'last_name', 'email', 'phone_number', 'role'];
 
+        $extraData = [
+            'roles' => ['user', 'admin'],
+        ];
+
         return view('shared.form', [
             'item' => $user,
             'columns' => $columns,
             'routePrefix' => $this->routePrefix,
             'title' => $this->title,
             'mode' => 'edit',
+            'extraData' => $extraData,
         ]);
     }
 

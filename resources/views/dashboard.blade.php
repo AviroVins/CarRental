@@ -5,12 +5,6 @@
         Zalogowano!
     </div>
 
-    <div class="mb-4">
-        <a href="{{ route('user.reservations.index') }}" class="btn btn-success">
-            Twoje rezerwacje
-        </a>
-    </div>
-
     <div class="row">
         <div class="col-md-6 mb-4">
             <div class="card shadow">
